@@ -251,3 +251,546 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
 </script>
+
+<style>
+/* GMP website tools: gated calculators injected after page sections (see gt.js) */
+.gt-sec{padding:var(--section-space) var(--page-gutter);background:var(--surface);border-top:1px solid var(--line);color:var(--ink);font-family:var(--font-sans),sans-serif}
+.gt-sec *{box-sizing:border-box}
+.gt-in{max-width:var(--layout-max);margin:0 auto;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-8);align-items:start}
+.gt-intro{position:sticky;top:120px;display:flex;flex-direction:column;gap:var(--space-4)}
+.gt-eye{display:flex;align-items:center;gap:10px;margin:0;font-family:var(--font-mono),monospace;font-size:var(--fs-eyebrow);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.gt-eye:before{content:"";width:8px;height:8px;background:var(--signal);flex:0 0 auto}
+.gt-h2{margin:0;font-family:var(--font-serif),serif;font-weight:400;font-size:var(--fs-display-m);line-height:1.1;letter-spacing:-.01em;color:var(--ink)}
+.gt-lede{margin:0;font-size:var(--fs-body-l);line-height:1.6;color:var(--ink-2);max-width:var(--layout-measure)}
+.gt-card{background:var(--surface-raised);border:1px solid var(--line);padding:var(--space-6);box-shadow:0 30px 60px -40px rgba(17,18,20,.45);display:flex;flex-direction:column;gap:var(--space-5)}
+.gt-top{display:flex;justify-content:space-between;align-items:center;gap:var(--space-3)}
+.gt-tag{font-family:var(--font-mono),monospace;font-size:var(--fs-eyebrow);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.gt-badge{font-family:var(--font-mono),monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--signal-ink);background:var(--signal-soft);padding:4px 8px}
+.gt-title{margin:0;font-family:var(--font-serif),serif;font-weight:400;font-size:var(--fs-headline);line-height:1.2;color:var(--ink)}
+.gt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:var(--space-3)}
+.gt-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.gt-field label,.gt-th{font-family:var(--font-mono),monospace;font-size:var(--fs-data);line-height:1.4;color:var(--ink-3)}
+.gt-in input[type=text],.gt-in input[type=email],.gt-in input[type=number]{width:100%;height:48px;padding:0 14px;border:1px solid var(--line-strong);border-radius:2px;background:var(--surface-raised);color:var(--ink);font:400 16px/1 var(--font-sans),sans-serif;appearance:textfield;-moz-appearance:textfield}
+.gt-in input::-webkit-outer-spin-button,.gt-in input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.gt-in input:focus{outline:2px solid var(--focus);outline-offset:1px;border-color:var(--ink)}
+.gt-sub{margin:0;font-family:var(--font-mono),monospace;font-size:var(--fs-caption);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+/* reset the theme's default table borders and zebra stripes */
+.gt-sec table,.gt-sec th,.gt-sec td{border:0;background:transparent}
+.gt-sec table tbody>tr:nth-child(odd)>td,.gt-sec table tbody>tr:nth-child(odd)>th,.gt-sec table tbody tr:hover>td{background:transparent}
+.gt-table{width:100%;border-collapse:collapse;margin:0}
+.gt-table th{text-align:left;font-weight:400;padding:0 8px 6px 0;vertical-align:bottom}
+.gt-table td{padding:0 8px 8px 0}
+.gt-table td:last-child,.gt-table th:last-child{padding-right:0}
+.gt-table .gt-rowname{font-size:15px;color:var(--ink);white-space:nowrap;padding-right:12px;vertical-align:middle}
+.gt-table input[type=text]{min-width:120px}
+.gt-scroll{overflow-x:auto;margin:0 -2px;padding:0 2px}
+.gt-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;height:48px;padding:0 24px;border:0;border-radius:0;background:var(--ink);color:var(--surface);font:500 16px/1 var(--font-sans),sans-serif;cursor:pointer;transition:background .15s}
+.gt-btn:hover{background:#2b2c30}
+.gt-btn:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+.gt-btn-signal{background:var(--signal);color:var(--on-signal)}
+.gt-btn-signal:hover{background:#d93a14}
+.gt-btn[disabled]{opacity:.6;cursor:progress}
+.gt-err{margin:0;color:var(--danger);font-size:var(--fs-body-s)}
+.gt-err:empty{display:none}
+.gt-gate,.gt-res{border-top:1px solid var(--line);padding-top:var(--space-5);display:flex;flex-direction:column;gap:var(--space-4)}
+.gt-gate-h{margin:0;font-family:var(--font-serif),serif;font-weight:400;font-size:var(--fs-title-l);line-height:1.3}
+.gt-fine{margin:0;font-size:13px;line-height:1.5;color:var(--ink-3)}
+.gt-fine a,.gt-link{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.gt-hl{display:flex;flex-direction:column;gap:6px}
+.gt-num{margin:0;font-family:var(--font-serif),serif;font-weight:400;font-size:var(--fs-numeral);line-height:1;color:var(--signal-ink);letter-spacing:-.02em;overflow-wrap:anywhere}
+.gt-num.gt-num-s{font-size:var(--fs-display-m);line-height:1.1}
+.gt-rows{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--space-4) var(--space-5);margin:0;padding:0}
+.gt-rows div{border-top:1px solid var(--line);padding-top:var(--space-3);min-width:0}
+.gt-rows dt{font-family:var(--font-mono),monospace;font-size:var(--fs-caption);line-height:1.4;color:var(--ink-3)}
+.gt-rows dd{margin:6px 0 0;font-family:var(--font-serif),serif;font-size:var(--fs-title-s);line-height:1.35;color:var(--ink);overflow-wrap:anywhere}
+.gt-insight{margin:0;padding:var(--space-4) var(--space-5);background:var(--surface-sunken);font-size:var(--fs-body);line-height:1.6;color:var(--ink)}
+.gt-cta{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-5)}
+.gt-cta .gt-btn{width:auto}
+.gt-note{margin:0;font-family:var(--font-mono),monospace;font-size:var(--fs-caption);color:var(--success)}
+.gt-note.gt-warn{color:var(--warning)}
+.gt-linkbtn{background:none;border:0;padding:0;font:inherit;font-size:15px;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.gt-hide{display:none !important}
+/* quiz */
+.gt-qs{display:flex;flex-direction:column;gap:var(--space-4);margin:0;padding:0;border:0}
+.gt-q{border:0;margin:0;padding:0 0 var(--space-4);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:var(--space-3)}
+.gt-q legend{padding:0;font-size:var(--fs-body);line-height:1.5;color:var(--ink)}
+.gt-q legend small{display:block;font-family:var(--font-mono),monospace;font-size:var(--fs-caption);color:var(--ink-3);margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em}
+.gt-scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.gt-scale label{position:relative;display:flex;align-items:center;justify-content:center;min-height:40px;padding:6px 4px;border:1px solid var(--line);font-size:13px;line-height:1.2;text-align:center;color:var(--ink-2);cursor:pointer;transition:border-color .15s,background .15s}
+.gt-scale input{position:absolute;opacity:0;pointer-events:none}
+.gt-scale label:hover{border-color:var(--ink)}
+.gt-scale input:checked+span{color:var(--surface)}
+.gt-scale label:has(input:checked){background:var(--ink);border-color:var(--ink)}
+.gt-scale label:has(input:focus-visible){outline:2px solid var(--signal);outline-offset:2px}
+.gt-bars{display:flex;flex-direction:column;gap:var(--space-3)}
+.gt-bar{display:grid;grid-template-columns:110px 1fr 44px;align-items:center;gap:var(--space-3);font-size:var(--fs-body-s)}
+.gt-bar i{display:block;height:10px;background:var(--surface-sunken);position:relative}
+.gt-bar i b{position:absolute;inset:0 auto 0 0;background:var(--line-strong)}
+.gt-bar.gt-low i b{background:var(--signal)}
+.gt-bar span:last-child{font-family:var(--font-mono),monospace;text-align:right}
+.gt-rank{width:100%;border-collapse:collapse;font-size:var(--fs-body-s);margin:0}
+.gt-sec .gt-rank th{text-align:left;font-family:var(--font-mono),monospace;font-weight:400;font-size:var(--fs-caption);color:var(--ink-3);padding:0 8px 8px 0;border-bottom:1px solid var(--line)}
+.gt-sec .gt-rank td{padding:10px 8px 10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.gt-sec .gt-rank tr.gt-top1 td{background:var(--signal-soft)}
+.gt-sec .gt-rank tr.gt-top1 td:first-child{padding-left:8px}
+.gt-rank td:first-child{font-weight:500}
+.gt-pill{display:inline-block;padding:2px 8px;font-family:var(--font-mono),monospace;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+.gt-ok{background:var(--success-soft);color:var(--success)}
+.gt-hold{background:var(--warning-soft);color:var(--warning)}
+.gt-bad{background:var(--danger-soft);color:var(--danger)}
+@media (max-width:1024px){.gt-in{grid-template-columns:minmax(0,1fr);gap:var(--space-6)}.gt-intro{position:static}}
+@media (max-width:600px){.gt-card{padding:var(--space-5)}.gt-scale{grid-template-columns:repeat(5,minmax(0,1fr))}.gt-scale label{font-size:11px;min-height:44px}.gt-bar{grid-template-columns:90px 1fr 40px}}
+</style>
+<script>
+(function(){
+  // GMP website tools. Each tool is injected after (or inside) an Elementor element on its page,
+  // asks for name and work email before showing results, and emails the results through the
+  // "Website tools" form (page 284, kept as a draft) so leads land in Elementor > Submissions.
+  var FORM={post:284, id:'5bffcb2a', name:'Website tools'};
+  var STORE='gmpToolsContact';
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function money(v){
+    var a=Math.abs(v), s=v<0?'-':'', r;
+    if(a>=1e9) r=(a/1e9).toFixed(a>=1e10?0:1)+'B';
+    else if(a>=1e6) r=(a/1e6).toFixed(a>=1e7?0:1)+'M';
+    else if(a>=1e3) r=Math.round(a/1e3)+'K';
+    else r=Math.round(a).toString();
+    return s+'$'+r.replace(/\.0(?=[BMK])/,'');
+  }
+  function pct(v,d){ return (Math.round(v*Math.pow(10,d||0))/Math.pow(10,d||0)).toLocaleString('en-US')+'%'; }
+  function num(v){ return Math.round(v).toLocaleString('en-US'); }
+  function months(v){ return v>=100?'over 8 years':(Math.round(v*10)/10)+(Math.round(v*10)/10===1?' month':' months'); }
+  function list(a){ return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1]; }
+  function store(){ try{ return JSON.parse(localStorage.getItem(STORE)||'{}'); }catch(e){ return {}; } }
+  function save(o){ try{ localStorage.setItem(STORE,JSON.stringify(o)); }catch(e){} }
+
+  // ---------- shared field helpers ----------
+  function field(key,label,value,opts){
+    opts=opts||{};
+    return '<div class="gt-field"><label for="'+key+'">'+esc(label)+'</label><input type="number" inputmode="decimal" id="'+key+'" data-k="'+key.split('-').pop()+'" value="'+value+'" min="'+(opts.min!=null?opts.min:0)+'"'+(opts.max!=null?' max="'+opts.max+'"':'')+' step="any"></div>';
+  }
+  function val(card,k){ var i=card.querySelector('[data-k="'+k+'"]'); return i?parseFloat(i.value):NaN; }
+  function textval(card,k){ var i=card.querySelector('[data-k="'+k+'"]'); return i?i.value.trim():''; }
+  function need(cond,msg){ if(!cond) throw new Error(msg); }
+  function summary(card){
+    var out=[];
+    [].forEach.call(card.querySelectorAll('.gt-form input'),function(i){
+      if(i.type==='radio'){ if(i.checked) out.push(i.getAttribute('data-q')+': '+i.getAttribute('data-l')); return; }
+      var l=card.querySelector('label[for="'+i.id+'"]'), lab=l?l.textContent:(i.getAttribute('aria-label')||i.id);
+      if(i.value!=='') out.push(lab+': '+i.value);
+    });
+    return out.join(' · ');
+  }
+  function rowTable(prefix,rows,cols){
+    var h='<div class="gt-scroll"><table class="gt-table"><thead><tr><th class="gt-th">'+esc(cols[0])+'</th>';
+    cols.slice(1).forEach(function(c){ h+='<th class="gt-th" scope="col">'+esc(c.label)+'</th>'; });
+    h+='</tr></thead><tbody>';
+    rows.forEach(function(r,ri){
+      h+='<tr>';
+      if(r.editableName) h+='<td><input type="text" id="'+prefix+'-n'+ri+'" data-k="n'+ri+'" value="'+esc(r.name)+'" aria-label="'+esc(cols[0])+' '+(ri+1)+' name"></td>';
+      else h+='<td class="gt-rowname">'+esc(r.name)+'</td>';
+      cols.slice(1).forEach(function(c,ci){
+        var k=c.k+ri;
+        h+='<td><input type="number" inputmode="decimal" step="any" min="0" id="'+prefix+'-'+k+'" data-k="'+k+'" value="'+(r.v[ci]==null?'':r.v[ci])+'" aria-label="'+esc(r.name+' '+c.label)+'"></td>';
+      });
+      h+='</tr>';
+    });
+    return h+'</tbody></table></div>';
+  }
+
+  // ---------- the tools ----------
+  var AREAS=['Funnel','Segments','Messaging','Pricing','Channels','Forecast'];
+  var QUIZ=[
+    ['Funnel','We know our conversion rate at every step from first touch to closed-won.'],
+    ['Funnel','We know which step in the funnel loses us the most revenue.'],
+    ['Segments','We can name the two or three segments where we win most often.'],
+    ['Segments','Sales and marketing spend most of their time on those segments.'],
+    ['Messaging','Our messaging comes from what buyers said in win-loss interviews.'],
+    ['Messaging','A prospect could explain how we differ from the alternative in one sentence.'],
+    ['Pricing','Reps rarely need a discount to close a deal.'],
+    ['Pricing','Our packages fit how our buyers approve and sign for spend.'],
+    ['Channels','We know the cost per qualified opportunity for each channel.'],
+    ['Channels','We move budget based on what the next dollar buys, not the average.'],
+    ['Forecast','Every rep uses the same written definitions for each pipeline stage.'],
+    ['Forecast','Last quarter’s forecast landed within 10 percent of the actual number.']
+  ];
+  var SCALE=['Strongly disagree','Disagree','Not sure','Agree','Strongly agree'];
+  var ADVICE={
+    Funnel:'You can’t fix what you can’t see. Measure conversion at every step from first touch to closed-won, then work on the step that loses the most revenue.',
+    Segments:'Effort is spread across buyers who don’t all convert. Score each segment on win rate, deal size, sales cycle and payback, then put budget and sales time into the best two or three.',
+    Messaging:'Buyers can’t easily tell you apart. Rebuild the message from win-loss interviews and test it before anyone rewrites the website.',
+    Pricing:'Discounting and package friction are likely costing you. Clear discount bands and packages that match how buyers approve spend usually pay back fastest.',
+    Channels:'Budget is following averages instead of the next dollar. Track cost per qualified opportunity by channel and scale only where the marginal cost holds.',
+    Forecast:'The forecast can’t be trusted until stages mean the same thing to every rep. Write down stage definitions and exit criteria first.'
+  };
+
+  var TOOLS=[
+  { key:'quiz', name:'Go-to-market health check', anchor:'37eb8e98', where:'after',
+    eyebrow:'Free health check', h2:'Where is your pipeline leaking?',
+    lede:'Twelve statements, about two minutes. Score each one honestly and we’ll show you which of the six areas is most likely holding pipeline back.',
+    tag:'Health check', title:'How much do you agree with each statement?', button:'See my score',
+    form:function(id){
+      var h='<div class="gt-qs">';
+      QUIZ.forEach(function(q,i){
+        h+='<fieldset class="gt-q"><legend><small>'+esc(q[0])+'</small>'+esc(q[1])+'</legend><div class="gt-scale">';
+        SCALE.forEach(function(s,v){ h+='<label><input type="radio" name="'+id+'-q'+i+'" value="'+v+'" data-q="Q'+(i+1)+'" data-l="'+esc(s)+'"><span>'+esc(s)+'</span></label>'; });
+        h+='</div></fieldset>';
+      });
+      return h+'</div>';
+    },
+    compute:function(card){
+      var sc={}; AREAS.forEach(function(a){ sc[a]=0; });
+      QUIZ.forEach(function(q,i){
+        var c=card.querySelector('input[name$="-q'+i+'"]:checked');
+        need(c,'Please answer all twelve statements (question '+(i+1)+' is missing).');
+        sc[q[0]]+=parseInt(c.value,10);
+      });
+      var list=AREAS.map(function(a){ return {a:a,s:Math.round(sc[a]/8*100)}; });
+      var overall=Math.round(list.reduce(function(t,x){ return t+x.s; },0)/list.length);
+      var sorted=list.slice().sort(function(x,y){ return x.s-y.s; });
+      var low=sorted[0];
+      var bars='<div class="gt-bars">'+list.map(function(x){ return '<div class="gt-bar'+(x.a===low.a?' gt-low':'')+'"><span>'+x.a+'</span><i><b style="width:'+x.s+'%"></b></i><span>'+x.s+'</span></div>'; }).join('')+'</div>';
+      return { hlabel:'Your likely constraint', headline:low.a, small:true,
+        rows:[['Overall score',overall+' / 100'],['Lowest area',low.a+' ('+low.s+')'],['Next lowest',sorted[1].a+' ('+sorted[1].s+')'],['Strongest area',sorted[5].a+' ('+sorted[5].s+')'],['All six areas',list.map(function(x){ return x.a+' '+x.s; }).join(' · ')]],
+        extra:bars, insight:ADVICE[low.a] };
+    }
+  },
+  { key:'funnel', name:'Funnel leak finder', anchor:'1941beab', where:'after',
+    eyebrow:'Funnel leak finder', h2:'Which step is losing you the most revenue?',
+    lede:'Enter a typical month. We compare each step with a target and show what closing the gap at that one step would be worth in a year. Edit the targets to match your own.',
+    tag:'Calculator', title:'Your funnel in a typical month', button:'Find my leak',
+    form:function(id){
+      return '<div class="gt-grid">'+field(id+'-v','Website visits',20000)+field(id+'-r','Demo requests',300)+field(id+'-m','Meetings held',180)+field(id+'-q','Qualified opportunities',90)+field(id+'-w','Closed-won deals',18)+field(id+'-a','Average first-year deal ($K)',40)+'</div>'
+        +'<p class="gt-sub">Targets (%)</p><div class="gt-grid">'+field(id+'-t1','Visit to demo request',2,{max:100})+field(id+'-t2','Request to meeting held',70,{max:100})+field(id+'-t3','Meeting to qualified',50,{max:100})+field(id+'-t4','Qualified to closed-won',25,{max:100})+'</div>';
+    },
+    compute:function(card){
+      var c=[val(card,'v'),val(card,'r'),val(card,'m'),val(card,'q'),val(card,'w')], A=val(card,'a')*1000;
+      c.forEach(function(x){ need(x>0,'Enter a number above zero for every step.'); });
+      need(A>0,'Enter your average first-year deal size.');
+      for(var i=1;i<5;i++) need(c[i]<=c[i-1],'Each step should be smaller than the one before it.');
+      var names=['Visit to demo request','Request to meeting held','Meeting to qualified','Qualified to closed-won'];
+      var steps=names.map(function(n,i){
+        var rate=c[i+1]/c[i]*100, t=val(card,'t'+(i+1));
+        need(t>0&&t<=100,'Targets must be between 0 and 100.');
+        var gain=rate<t?c[4]*(t/rate-1)*12*A:0;
+        return {n:n,rate:rate,t:t,gain:gain};
+      });
+      var worst=steps.slice().sort(function(x,y){ return y.gain-x.gain; })[0];
+      var rows=steps.map(function(s){ return [s.n+': '+pct(s.rate,1)+' (target '+pct(s.t,1)+')', s.gain>0?'+'+money(s.gain)+' a year at target':'At or above target']; });
+      rows.push(['Closed-won deals a year', num(c[4]*12)+' ('+money(c[4]*12*A)+')']);
+      if(worst.gain<=0) return {hlabel:'Every step is at or above target', headline:'No leak found', small:true, rows:rows,
+        insight:'Your conversion holds up at every step against these targets. The next lever is volume or deal size, or tighter targets.'};
+      return {hlabel:'Revenue lost at your worst step: '+worst.n, headline:money(worst.gain)+' a year', rows:rows,
+        insight:'Fix '+worst.n.toLowerCase()+' first. Moving it from '+pct(worst.rate,1)+' to '+pct(worst.t,1)+' would add about '+num(worst.gain/A)+' deals a year without spending more on leads.'};
+    }
+  },
+  { key:'segments', name:'Segment scorecard', anchor:'49d7735b', where:'after',
+    eyebrow:'Segment scorecard', h2:'Score your own segments on the same four things.',
+    lede:'Add up to four segments. We rank them on win rate, deal size, sales cycle and payback, and show which one earns the budget and sales time.',
+    tag:'Calculator', title:'Your segments', button:'Rank my segments',
+    form:function(id){
+      return rowTable(id,[
+          {name:'Mid-market',editableName:true,v:[30,45,60,12]},
+          {name:'Enterprise',editableName:true,v:[18,140,150,45]},
+          {name:'Small business',editableName:true,v:[35,12,25,6]},
+          {name:'',editableName:true,v:[null,null,null,null]}],
+          ['Segment',{label:'Win rate (%)',k:'w'},{label:'First-year deal ($K)',k:'a'},{label:'Sales cycle (days)',k:'c'},{label:'Cost to win a deal ($K)',k:'x'}])
+        +'<div class="gt-grid">'+field(id+'-gm','Gross margin (%)',80,{max:100})+'</div>';
+    },
+    compute:function(card){
+      var gm=val(card,'gm')/100; need(gm>0&&gm<=1,'Enter a gross margin between 0 and 100.');
+      var segs=[];
+      for(var i=0;i<4;i++){
+        var n=textval(card,'n'+i), w=val(card,'w'+i), a=val(card,'a'+i), c=val(card,'c'+i), x=val(card,'x'+i);
+        if(!n && isNaN(w) && isNaN(a)) continue;
+        need(n,'Give segment '+(i+1)+' a name.');
+        need(w>0&&w<=100&&a>0&&c>0&&x>=0,'Fill in every number for '+n+'.');
+        segs.push({n:n,w:w,a:a,c:c,x:x,vel:w/100*a*365/c,pay:x/(a*gm/12)});
+      }
+      need(segs.length>=2,'Enter at least two segments to compare.');
+      function rank(key,asc){ var s=segs.slice().sort(function(p,q){ return asc?p[key]-q[key]:q[key]-p[key]; }); s.forEach(function(g,i){ g['r'+key]=i+1; }); }
+      rank('w'); rank('a'); rank('c',true); rank('pay',true);
+      segs.forEach(function(g){ g.score=(g.rw+g.ra+g.rc+g.rpay)/4; });
+      segs.sort(function(p,q){ return p.score-q.score || q.vel-p.vel; });
+      var best=segs[0], worst=segs[segs.length-1];
+      var table='<table class="gt-rank"><thead><tr><th>Rank</th><th>Segment</th><th>Revenue per opportunity a year</th><th>Payback</th></tr></thead><tbody>'
+        +segs.map(function(g,i){ return '<tr'+(i===0?' class="gt-top1"':'')+'><td>'+(i+1)+'</td><td>'+esc(g.n)+'</td><td>'+money(g.vel*1000)+'</td><td>'+months(g.pay)+'</td></tr>'; }).join('')+'</tbody></table>';
+      var rows=segs.slice(0,4).map(function(g,i){ return ['#'+(i+1)+' '+g.n, g.w+'% win · '+money(g.a*1000)+' deal · '+g.c+' days · payback '+months(g.pay)]; });
+      while(rows.length<4) rows.push(['','']);
+      rows.push(['Revenue per opportunity a year (best vs lowest)', money(best.vel*1000)+' vs '+money(worst.vel*1000)]);
+      var ratio=best.vel/worst.vel;
+      return {hlabel:'Where the budget and sales time should go', headline:best.n, small:true, rows:rows, extra:table,
+        insight:best.n+' ranks first across the four measures. Once you allow for cycle length, each qualified opportunity there is worth about '+(Math.round(ratio*10)/10)+'× one in '+worst.n+'.'};
+    }
+  },
+  { key:'discount', name:'Discount leakage calculator', anchor:'2a5401cf', where:'after',
+    eyebrow:'Discount leakage', h2:'How much are discounts really costing you?',
+    lede:'Most teams know their average discount. Few know what it adds up to, or that renewals usually inherit it.',
+    tag:'Calculator', title:'Your deals in a typical year', button:'Calculate my leakage',
+    form:function(id){
+      return '<div class="gt-grid">'+field(id+'-d','New deals a year',80)+field(id+'-l','Average list price, first year ($K)',50)+field(id+'-p','Average discount (%)',25,{max:100})+field(id+'-t','Tighten the average by (points)',5,{max:100})+field(id+'-g','Gross revenue retention (%)',90,{max:100})+'</div>';
+    },
+    compute:function(card){
+      var d=val(card,'d'), l=val(card,'l')*1000, p=val(card,'p'), t=val(card,'t'), g=val(card,'g')/100;
+      need(d>0&&l>0,'Enter your deals per year and average list price.');
+      need(p>=0&&p<100,'Enter an average discount between 0 and 100.');
+      need(t>=0&&t<=p,'The tightening can’t be bigger than the discount itself.');
+      need(g>0&&g<=1.5,'Enter gross revenue retention as a percentage, such as 90.');
+      var given=d*l*p/100, rec=d*l*t/100, three=rec*(1+g+g*g);
+      return {hlabel:'Given away in discounts each year', headline:money(given),
+        rows:[['Average discount',pct(p,1)],['List value of new deals a year',money(d*l)],['Recovered by tightening '+t+' points',money(rec)+' a year'],['Over 3 years, as renewals keep the price',money(three)],['Deals needed to make that up at today’s discount',num(rec/(l*(1-p/100)))+' extra deals']],
+        insight:'Tightening the average discount by '+t+' points is worth about '+money(rec)+' in the first year and '+money(three)+' over three years. Clear discount bands, with approval above them, usually get there without losing deals.'};
+    }
+  },
+  { key:'price', name:'Price increase simulator', anchor:'798bd72e', where:'after',
+    eyebrow:'Price increase simulator', h2:'Will a price increase pay for itself?',
+    lede:'Enter the increase you’re considering and how many customers you might lose because of it. We show the net effect and how much churn you could absorb before it stops paying.',
+    tag:'Calculator', title:'Your customers today', button:'Run the numbers',
+    form:function(id){
+      return '<div class="gt-grid">'+field(id+'-c','Customers',400)+field(id+'-r','Average annual revenue per customer ($K)',24)+field(id+'-i','Price increase (%)',8,{max:500})+field(id+'-l','Customers lost because of it (%)',3,{max:100})+'</div>';
+    },
+    compute:function(card){
+      var c=val(card,'c'), r=val(card,'r')*1000, i=val(card,'i')/100, l=val(card,'l')/100;
+      need(c>0&&r>0,'Enter your customer count and average revenue.');
+      need(i>0,'Enter the price increase you’re considering.');
+      need(l>=0&&l<1,'Enter the share of customers you might lose, between 0 and 100.');
+      var now=c*r, after=c*(1-l)*r*(1+i), ch=after-now, be=i/(1+i)*100;
+      var ok=ch>=0;
+      return {hlabel:'Net change in annual revenue', headline:(ok?'+':'')+money(ch),
+        rows:[['Annual revenue today',money(now)],['After the increase',money(after)],['Customers lost',num(c*l)+' of '+num(c)],['Break-even customer loss',pct(be,1)],['Verdict',ok?'Pays for itself':'Costs more than it earns']],
+        insight:ok?'At '+pct(i*100,1)+' you could lose up to '+pct(be,1)+' of customers before the increase stops paying. Rolling it out at renewal, with a package that adds value, usually keeps losses well below that.'
+          :'At this level of churn the increase loses money. A smaller increase, or one tied to a new package or value metric, is usually safer than raising list price across the board.'};
+    }
+  },
+  { key:'cac', name:'CAC payback by program', anchor:'68a3567f', where:'after',
+    eyebrow:'CAC payback', h2:'How fast does each program pay back?',
+    lede:'Enter a quarter of spend and new customers for each program. We show cost to acquire, months to pay it back and lifetime value against cost.',
+    tag:'Calculator', title:'Spend and new customers last quarter', button:'Compare my programs',
+    form:function(id){
+      return rowTable(id,[{name:'Paid',v:[60,6]},{name:'Outbound',v:[45,5]},{name:'Partners',v:[20,3]},{name:'Content',v:[25,2]}],
+          ['Program',{label:'Spend ($K)',k:'s'},{label:'New customers',k:'n'}])
+        +'<div class="gt-grid">'+field(id+'-a','Average first-year deal ($K)',30)+field(id+'-gm','Gross margin (%)',80,{max:100})+field(id+'-ch','Annual churn (%)',12,{max:100})+'</div>';
+    },
+    compute:function(card){
+      var A=val(card,'a')*1000, gm=val(card,'gm')/100, ch=val(card,'ch')/100;
+      need(A>0,'Enter your average first-year deal size.');
+      need(gm>0&&gm<=1,'Enter a gross margin between 0 and 100.');
+      need(ch>0&&ch<=1,'Enter annual churn above zero, such as 12.');
+      var names=['Paid','Outbound','Partners','Content'], progs=[], S=0, N=0;
+      names.forEach(function(n,i){
+        var s=val(card,'s'+i)*1000, k=val(card,'n'+i);
+        if(!(s>0)) return;
+        S+=s; N+=(k>0?k:0);
+        var cac=k>0?s/k:Infinity;
+        progs.push({n:n,cac:cac,pay:cac/(A*gm/12),ltv:A*gm/ch/cac,k:k});
+      });
+      need(progs.length,'Enter spend for at least one program.');
+      need(N>0,'Enter new customers for at least one program.');
+      var bcac=S/N, bpay=bcac/(A*gm/12), bltv=A*gm/ch/bcac;
+      var withC=progs.filter(function(p){ return p.k>0; }).sort(function(p,q){ return p.pay-q.pay; });
+      var rows=names.map(function(n){
+        var p=progs.filter(function(x){ return x.n===n; })[0];
+        if(!p) return [n,'No spend entered'];
+        if(!(p.k>0)) return [n,'No customers yet'];
+        return [n,'CAC '+money(p.cac)+' · payback '+months(p.pay)+' · LTV:CAC '+(Math.round(p.ltv*10)/10)+'×'];
+      });
+      rows.push(['Blended','CAC '+money(bcac)+' · LTV:CAC '+(Math.round(bltv*10)/10)+'×']);
+      var b=withC[0], w=withC[withC.length-1];
+      return {hlabel:'Blended CAC payback', headline:months(bpay), rows:rows,
+        insight:withC.length>1?b.n+' pays back fastest at '+months(b.pay)+'; '+w.n+' takes '+months(w.pay)+'. Before moving budget, check what the next dollar buys in each program, not just the average.':'Add a second program to compare payback across programs.'};
+    }
+  },
+  { key:'marginal', name:'Next-dollar check', anchor:'325b640a', where:'after',
+    eyebrow:'Next-dollar check', h2:'Is the next dollar still worth it?',
+    lede:'Compare last month with this month for each program. The average can look fine while the extra spend buys almost nothing. This applies rule three.',
+    tag:'Calculator', title:'Spend and qualified opportunities by month', button:'Check my programs',
+    form:function(id){
+      return rowTable(id,[{name:'Paid',v:[40,16,55,19]},{name:'Outbound',v:[30,12,30,13]},{name:'Partners',v:[10,5,14,7]},{name:'Content',v:[15,6,15,6]}],
+          ['Program',{label:'Last month spend ($K)',k:'a'},{label:'Last month opps',k:'b'},{label:'This month spend ($K)',k:'c'},{label:'This month opps',k:'d'}])
+        +'<div class="gt-grid">'+field(id+'-t','Target cost per qualified opportunity ($K)',3)+'</div>';
+    },
+    compute:function(card){
+      var T=val(card,'t')*1000; need(T>0,'Enter your target cost per qualified opportunity.');
+      var names=['Paid','Outbound','Partners','Content'], res=[];
+      names.forEach(function(n,i){
+        var a=val(card,'a'+i)*1000, b=val(card,'b'+i), c=val(card,'c'+i)*1000, d=val(card,'d'+i);
+        if(isNaN(a)||isNaN(c)||!(c>0)) return;
+        need(b>=0&&d>=0,'Enter opportunities for '+n+'.');
+        var avg=d>0?c/d:Infinity, ds=c-a, dop=d-b, mc, v;
+        if(ds<=0){ mc=null; v=avg<=T?['Room to scale','gt-ok']:['Hold','gt-hold']; }
+        else if(dop<=0){ mc=Infinity; v=['Pull back','gt-bad']; }
+        else { mc=ds/dop; v=mc>T?['Pull back','gt-bad']:(avg<=T?['Room to scale','gt-ok']:['Hold','gt-hold']); }
+        res.push({n:n,avg:avg,mc:mc,v:v});
+      });
+      need(res.length,'Enter this month’s spend for at least one program.');
+      var table='<table class="gt-rank"><thead><tr><th>Program</th><th>Average cost per opp</th><th>Next-dollar cost per opp</th><th></th></tr></thead><tbody>'
+        +res.map(function(r){ return '<tr><td>'+r.n+'</td><td>'+(isFinite(r.avg)?money(r.avg):'No opps')+'</td><td>'+(r.mc===null?'Spend flat':(isFinite(r.mc)?money(r.mc):'Bought nothing'))+'</td><td><span class="gt-pill '+r.v[1]+'">'+r.v[0]+'</span></td></tr>'; }).join('')+'</tbody></table>';
+      var bad=res.filter(function(r){ return r.v[0]==='Pull back'; }), good=res.filter(function(r){ return r.v[0]==='Room to scale'; });
+      var rows=names.map(function(n){ var r=res.filter(function(x){ return x.n===n; })[0]; return [n, r?(r.v[0]+' · average '+(isFinite(r.avg)?money(r.avg):'n/a')+' · next dollar '+(r.mc===null?'spend flat':(isFinite(r.mc)?money(r.mc):'bought nothing'))):'Not entered']; });
+      rows.push(['Target cost per qualified opportunity',money(T)]);
+      return {hlabel:'Programs where the next dollar costs more than target', headline:bad.length?list(bad.map(function(r){ return r.n; })):'None', small:true, rows:rows, extra:table,
+        insight:bad.length?'Pull back on '+list(bad.map(function(r){ return r.n; }))+': the extra spend is buying opportunities above your target, even if the average still looks fine.'+(good.length?' '+list(good.map(function(r){ return r.n; }))+' can take more, in steps of 20 to 30 percent.':''):(good.length?list(good.map(function(r){ return r.n; }))+' can take more budget, in steps of 20 to 30 percent. Hold the rest until cost per opportunity has held for four weeks.':'Nothing needs pulling back. Hold budgets until cost per opportunity has held for four straight weeks.')};
+    }
+  },
+  { key:'capacity', name:'Sales capacity planner', anchor:'27837bf6', where:'after',
+    eyebrow:'Sales capacity planner', h2:'How many reps does your number need?',
+    lede:'Founder-led sales usually ends with a hiring plan. Enter next year’s new revenue target and how your reps perform, and see how many to hire, and what waiting costs.',
+    tag:'Calculator', title:'Your target and your team', button:'Plan my hiring',
+    form:function(id){
+      return '<div class="gt-grid">'+field(id+'-t','New ARR target, next 12 months ($K)',6000)+field(id+'-q','Annual quota per ramped rep ($K)',800)+field(id+'-a','Average attainment (%)',70,{max:200})+field(id+'-r','Months to ramp a new rep',5,{max:24})+field(id+'-n','Ramped reps today',6)+'</div>';
+    },
+    compute:function(card){
+      var T=val(card,'t')*1000, Q=val(card,'q')*1000, at=val(card,'a')/100, R=val(card,'r'), n=val(card,'n');
+      need(T>0&&Q>0,'Enter your target and quota.');
+      need(at>0,'Enter average attainment.');
+      need(R>=0&&R<12,'Ramp time must be under 12 months for this plan.');
+      need(n>=0,'Enter how many ramped reps you have.');
+      var per=Q*at, cur=n*per, gap=Math.max(0,T-cur);
+      var nowC=per*(12-R/2)/12, lateC=per*Math.max(0,12-3-R/2)/12;
+      var now=gap>0?Math.ceil(gap/nowC):0, late=gap>0?(lateC>0?Math.ceil(gap/lateC):Infinity):0;
+      return {hlabel:'Reps to hire this month', headline:now===1?'1 rep':now+' reps',
+        rows:[['What your current team should close',money(cur)],['Gap to target',money(gap)],['A new hire’s first-year contribution',money(nowC)],['Reps to hire if you wait 3 months',isFinite(late)?num(late):'Can’t close the gap this year'],['Ramped reps the target needs in total',num(Math.ceil(T/per))]],
+        insight:gap<=0?'Your current team should cover the target at today’s attainment. The risk is attainment, not headcount: protect pipeline per rep.'
+          :'Hire '+now+' now to close the '+money(gap)+' gap. Wait three months and you’d need '+(isFinite(late)?late:'more than this year allows')+', because ramp eats into the year. This assumes reps ramp evenly and attainment holds; pipeline per rep usually decides whether it does.'};
+    }
+  },
+  { key:'onboarding', name:'Fintech onboarding calculator', anchor:'5fd2f7a8', where:'append',
+    eyebrow:'Onboarding calculator', h2:'What is a better onboarding funnel worth?',
+    lede:'Follow a month of visitors from sign-up to funded account. See your real cost per funded customer, and what a 5-point lift at identity check or first funding would add.',
+    tag:'Calculator', title:'Your onboarding funnel in a typical month', button:'Calculate my funnel',
+    form:function(id){
+      return '<div class="gt-grid">'+field(id+'-s','Marketing spend a month ($K)',150)+field(id+'-v','Visitors or installs a month',60000)+field(id+'-u','Start sign-up (%)',8,{max:100})+field(id+'-k','Pass identity check (%)',70,{max:100})+field(id+'-f','Fund their account (%)',45,{max:100})+field(id+'-r','Annual revenue per funded customer ($)',180)+'</div>';
+    },
+    compute:function(card){
+      var S=val(card,'s')*1000, V=val(card,'v'), u=val(card,'u')/100, k=val(card,'k')/100, f=val(card,'f')/100, r=val(card,'r');
+      need(V>0&&S>=0,'Enter your monthly spend and visitors.');
+      [u,k,f].forEach(function(x){ need(x>0&&x<=1,'Enter each conversion rate between 0 and 100.'); });
+      need(r>0,'Enter annual revenue per funded customer.');
+      var su=V*u, kyc=su*k, fd=kyc*f;
+      var k5=Math.min(1,k+.05), f5=Math.min(1,f+.05);
+      var exK=su*k5*f-fd, exF=kyc*f5-fd;
+      var bigger=exK>=exF?'identity check':'first funding', big=Math.max(exK,exF);
+      return {hlabel:'Cost per funded customer', headline:fd>0?money(S/fd):'n/a',
+        rows:[['Funded customers a month',num(fd)],['Visitor to funded',pct(fd/V*100,2)],['+5 points at identity check',(exK>0?'+'+num(exK)+' funded a month · +'+money(exK*12*r)+' a year':'Already at 100%')],['+5 points at first funding',(exF>0?'+'+num(exF)+' funded a month · +'+money(exF*12*r)+' a year':'Already at 100%')],['Sign-ups lost before funding each month',num(su-fd)]],
+        insight:'A 5-point lift at '+bigger+' is worth more here: about '+num(big)+' more funded customers a month, or '+money(big*12*r)+' in annual revenue, with no extra marketing spend.'};
+    }
+  },
+  { key:'api', name:'Sandbox to live calculator', anchor:'cbf5f22', where:'append',
+    eyebrow:'Sandbox to live', h2:'How much revenue is stuck in the sandbox?',
+    lede:'For API and infrastructure companies, slow integrations delay revenue you have already won. See what going live faster, or converting more sandboxes, is worth.',
+    tag:'Calculator', title:'Your developer funnel', button:'Calculate the value',
+    form:function(id){
+      return '<div class="gt-grid">'+field(id+'-s','New sandbox accounts a month',120)+field(id+'-g','Sandboxes that go live (%)',15,{max:100})+field(id+'-m','Months from sandbox to live',5,{max:36})+field(id+'-r','Monthly revenue per live customer ($)',2500)+field(id+'-x','Months faster to go live',1,{max:36})+'</div>';
+    },
+    compute:function(card){
+      var s=val(card,'s'), g=val(card,'g')/100, m=val(card,'m'), r=val(card,'r'), x=val(card,'x');
+      need(s>0&&r>0,'Enter sandbox accounts and revenue per live customer.');
+      need(g>0&&g<=1,'Enter the share that go live, between 0 and 100.');
+      need(m>=0&&x>=0&&x<=m,'Months faster can’t be more than the months it takes today.');
+      var live=s*g*12, arr=live*r*12, fwd=live*r*x, g5=Math.min(1,g+.05), extra=s*(g5-g)*12*r*12;
+      return {hlabel:'New annual run-rate from a year of sandboxes', headline:money(arr),
+        rows:[['Customers going live a year',num(live)],['Revenue waiting in integration at any time',money(s*g*m*r)+' a month'],['Going live '+x+' month'+(x===1?'':'s')+' faster',(x>0?'+'+money(fwd)+' revenue in the first year':'No change')],['+5 points of sandboxes going live','+'+money(extra)+' annual run-rate'],['Sandbox to live',pct(g*100,1)]],
+        insight:'Each month shaved off integration pulls about '+money(live*r)+' of revenue into the year. Faster go-live usually comes from better docs, a guided first integration and someone owning the account during the sandbox stage.'};
+    }
+  }];
+
+  // ---------- rendering ----------
+  function sectionHtml(t){
+    var id='gt-'+t.key;
+    return '<section class="gt-sec" id="'+id+'" aria-labelledby="'+id+'-h"><div class="gt-in">'
+      +'<div class="gt-intro"><p class="gt-eye">'+esc(t.eyebrow)+'</p><h2 class="gt-h2" id="'+id+'-h">'+esc(t.h2)+'</h2><p class="gt-lede">'+esc(t.lede)+'</p></div>'
+      +'<div class="gt-card"><div class="gt-top"><span class="gt-tag">'+esc(t.tag)+'</span><span class="gt-badge">Free tool</span></div>'
+      +'<h3 class="gt-title">'+esc(t.title)+'</h3>'
+      +'<form class="gt-form" novalidate>'+t.form(id)+'</form>'
+      +'<p class="gt-err" role="alert"></p>'
+      +'<button type="button" class="gt-btn gt-go">'+esc(t.button)+' →</button>'
+      +'<div class="gt-gate gt-hide"><h4 class="gt-gate-h">Where should we send your results?</h4>'
+      +'<div class="gt-grid"><div class="gt-field"><label for="'+id+'-gn">Name *</label><input type="text" id="'+id+'-gn" autocomplete="name"></div>'
+      +'<div class="gt-field"><label for="'+id+'-ge">Work email *</label><input type="email" id="'+id+'-ge" autocomplete="email"></div>'
+      +'<div class="gt-field"><label for="'+id+'-gc">Company</label><input type="text" id="'+id+'-gc" autocomplete="organization"></div></div>'
+      +'<p class="gt-fine">We’ll show your results here and email you a copy. We may follow up once about them. See our <a href="/privacy-policy/">privacy policy</a>.</p>'
+      +'<p class="gt-err gt-gate-err" role="alert"></p>'
+      +'<button type="button" class="gt-btn gt-btn-signal gt-unlock">Show my results →</button></div>'
+      +'<div class="gt-res gt-hide" aria-live="polite" tabindex="-1"></div>'
+      +'</div></div></section>';
+  }
+  function resultHtml(r,note){
+    var h='<div class="gt-hl"><span class="gt-tag">'+esc(r.hlabel)+'</span><p class="gt-num'+(r.small?' gt-num-s':'')+'">'+esc(r.headline)+'</p></div>';
+    if(r.extra) h+=r.extra;
+    h+='<dl class="gt-rows">'+r.rows.filter(function(x){ return x[0]; }).map(function(x){ return '<div><dt>'+esc(x[0])+'</dt><dd>'+esc(x[1])+'</dd></div>'; }).join('')+'</dl>';
+    h+='<p class="gt-insight">'+esc(r.insight)+'</p>';
+    if(note) h+='<p class="gt-note'+(note.warn?' gt-warn':'')+'">'+esc(note.text)+'</p>';
+    h+='<div class="gt-cta"><a class="gt-btn gt-btn-signal" href="/contact/">Book a diagnostic →</a><button type="button" class="gt-linkbtn gt-resend">Email me these results</button></div>';
+    return h;
+  }
+
+  function send(t,r,c,card){
+    var cfg=window.elementorFrontendConfig||{}, url=cfg.urls&&cfg.urls.ajaxurl, nonce=cfg.nonces&&cfg.nonces.atomicFormsSendForm;
+    if(!url||!nonce||!window.fetch||!window.FormData) return Promise.resolve(false);
+    var rows=r.rows.slice(0,5); while(rows.length<5) rows.push(['','']);
+    var f=[['gname','Name',c.name,'text'],['gemail','Work email',c.email,'email'],['gcompany','Company',c.company||'Not given','text'],['tool','Tool',t.name,'text'],['page','Page',location.host+location.pathname,'text'],
+      ['hlabel','Result label',r.hlabel,'text'],['headline','Result',r.headline,'text']];
+    rows.forEach(function(x,i){ f.push(['r'+(i+1)+'l','Row '+(i+1)+' label',x[0]||' ','text']); f.push(['r'+(i+1)+'v','Row '+(i+1),x[1]||' ','text']); });
+    f.push(['insight','What it means',r.insight,'text']); f.push(['inputs','Inputs',summary(card),'text']);
+    var fd=new FormData();
+    fd.append('action','elementor_pro_atomic_forms_send_form'); fd.append('_nonce',nonce);
+    fd.append('post_id',FORM.post); fd.append('form_id',FORM.id); fd.append('form_name',FORM.name);
+    fd.append('referer_title',document.title); fd.append('referrer',location.href);
+    f.forEach(function(x,i){ var p='form_fields['+i+']'; fd.append(p+'[id]',x[0]); fd.append(p+'[type]',x[3]); fd.append(p+'[label]',x[1]); fd.append(p+'[name]',x[0]); fd.append(p+'[options]','null'); fd.append(p+'[value]',x[2]); });
+    var timeout=new Promise(function(res){ setTimeout(function(){ res(false); },10000); });
+    var req=fetch(url,{method:'POST',body:fd,credentials:'same-origin'}).then(function(x){ return x.ok?x.json():null; }).then(function(j){ return !!(j&&j.success); }).catch(function(){ return false; });
+    return Promise.race([req,timeout]);
+  }
+
+  function mount(t){
+    var anchor=document.querySelector('[data-id="'+t.anchor+'"]');
+    if(!anchor || document.getElementById('gt-'+t.key)) return;
+    var wrap=document.createElement('div'); wrap.innerHTML=sectionHtml(t);
+    var sec=wrap.firstChild;
+    if(t.where==='append') anchor.appendChild(sec); else anchor.parentNode.insertBefore(sec,anchor.nextSibling);
+    var card=sec.querySelector('.gt-card'), err=card.querySelector('.gt-err'), go=card.querySelector('.gt-go'),
+        gate=card.querySelector('.gt-gate'), gerr=card.querySelector('.gt-gate-err'), unlock=card.querySelector('.gt-unlock'), res=card.querySelector('.gt-res');
+    var unlocked=false, last=null;
+    var gn=gate.querySelector('[id$="-gn"]'), ge=gate.querySelector('[id$="-ge"]'), gc=gate.querySelector('[id$="-gc"]');
+    var c0=store(); gn.value=c0.name||''; ge.value=c0.email||''; gc.value=c0.company||'';
+    sec.querySelector('form').addEventListener('submit',function(e){ e.preventDefault(); go.click(); });
+    function calc(){
+      err.textContent='';
+      try{ last=t.compute(card); }catch(e){ err.textContent=e.message; last=null; }
+      return last;
+    }
+    function show(note){
+      res.innerHTML=resultHtml(last,note); res.classList.remove('gt-hide');
+      res.querySelector('.gt-resend').addEventListener('click',function(){
+        var b=this; b.disabled=true; b.textContent='Sending…';
+        var r=calc(); if(!r){ b.disabled=false; b.textContent='Email me these results'; return; }
+        send(t,r,store(),card).then(function(ok){ b.textContent=ok?'Sent. Check your inbox':'Couldn’t send just now'; });
+      });
+    }
+    go.addEventListener('click',function(){
+      if(!calc()) return;
+      if(unlocked){ show(); return; }
+      gate.classList.remove('gt-hide'); go.classList.add('gt-hide');
+      (gn.value?(ge.value?unlock:ge):gn).focus();
+    });
+    unlock.addEventListener('click',function(){
+      gerr.textContent='';
+      var c={name:gn.value.trim(),email:ge.value.trim(),company:gc.value.trim()};
+      if(!c.name){ gerr.textContent='Please enter your name.'; gn.focus(); return; }
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c.email)){ gerr.textContent='Please enter a valid work email.'; ge.focus(); return; }
+      if(!calc()){ return; }
+      save(c); unlock.disabled=true; unlock.textContent='Sending…';
+      send(t,last,c,card).then(function(ok){
+        unlocked=true; gate.classList.add('gt-hide'); go.classList.remove('gt-hide'); go.textContent='Update my results →';
+        show(ok?{text:'We’ve emailed a copy to '+c.email+'.'}:{text:'We couldn’t email a copy just now, but here are your results.',warn:true});
+        res.focus({preventScroll:true}); res.scrollIntoView({behavior:'smooth',block:'nearest'});
+        try{ if(window.dataLayer) window.dataLayer.push({event:'gmp_tool_lead',tool:t.key}); }catch(e){}
+      });
+    });
+  }
+
+  function init(){ TOOLS.forEach(function(t){ try{ mount(t); }catch(e){ if(window.console) console.warn('GMP tool '+t.key,e); } }); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+})();
+</script>
