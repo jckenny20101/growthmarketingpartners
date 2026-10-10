@@ -17,6 +17,9 @@ Set `GCAL={id:'…',key:'…'}` to grey out slots that are busy on a Google Cale
   Calendar API and to `https://www.growthmarketingpartners.ca/*` and
   `https://growthmarketingpartners.ca/*` referrers.
 
+Current setup: calendar `ckenny@growthmarketingpartners.ca`, key "GMP website calendar" in Google Cloud
+project `gmp-website-261010` (browser key, restricted as above; it is public in the page source by design).
+
 It calls `freeBusy`, then falls back to the public events feed. Any slot overlapping a busy
 block is disabled, and a day with no free slots is disabled. If the request fails, all slots
 stay available. Availability is checked in the browser only; the form does not enforce it.

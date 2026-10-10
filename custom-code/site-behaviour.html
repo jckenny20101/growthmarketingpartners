@@ -109,7 +109,7 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
     var d1=document.getElementById('gc-date-1'); if(!d1 || d1.dataset.gcSlots) return;
     var MT='America/Edmonton', SLOTS=[[12,13],[15,16],[16,17]], DAYS=10;
     // Google Calendar availability. Leave id or key empty to show every slot.
-    var GCAL={id:'',key:''}, BUSY=null;
+    var GCAL={id:'ckenny@growthmarketingpartners.ca',key:'AIzaSyDCoFIxok44yHFfL6fiJs5v3KeWttyvMZo'}, BUSY=null;
     function pad(n){ return (n<10?'0':'')+n; }
     function iso(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
     function mtToday(){ var a=new Intl.DateTimeFormat('en-CA',{timeZone:MT,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()).split('-'); return new Date(+a[0],+a[1]-1,+a[2]); }
