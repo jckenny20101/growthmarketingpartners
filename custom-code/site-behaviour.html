@@ -29,6 +29,10 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
 .gc-slot[aria-checked=true]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
 .gc-slot[aria-checked=true] small{color:var(--surface);opacity:.75}
 .gc-slot:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+/* Go-to-market diagnostic, week-by-week timeline: draw the gradient as a 2px rule through the dots.
+   Elementor's atomic styles can't store background size/position for gradients, so it lives here. */
+.elementor-element-4f882440{background-repeat:no-repeat !important;background-size:100% 2px !important;background-position:0 6px !important}
+@media (max-width:767px){.elementor-element-4f882440{background-image:none !important;row-gap:var(--space-6)}}
 /* Slots already booked on the Google Calendar */
 .gc-slot:disabled,.gc-slot:disabled:hover{border-color:var(--line);background:transparent;color:var(--ink-3);opacity:.45;text-decoration:line-through;cursor:not-allowed}
 .gc-sr{position:absolute!important;left:0;bottom:0;width:1px!important;height:1px!important;min-height:0!important;padding:0!important;border:0!important;opacity:0!important;clip-path:inset(50%);pointer-events:none}
