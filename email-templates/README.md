@@ -14,7 +14,7 @@ Form email settings:
 | Setting   | Value |
 |-----------|-------|
 | To        | j.christopher.kenny@outlook.com |
-| Subject   | `New diagnostic request: [field id="5cec3a85"]` |
+| Subject   | `New call request: [field id="5cec3a85"]` |
 | From name | Growth Marketing Partners |
 | Reply-To  | `[field id="7b072996"]` (the visitor's email) |
 | Send as   | HTML |
@@ -34,10 +34,12 @@ Field shortcodes (`[field id="…"]` uses the element id of each input):
 
 ## Book a diagnostic: visitor confirmation
 
+Wording mirrors the Contact page (30-minute call → one-page scope → kick-off) so the page and emails match.
+
 Sent to the visitor (form action `email_2`) with the details of their request.
 
 - `book-a-diagnostic-confirmation.html` / `.min.html`
-- To: `[field id="7b072996"]` · Subject: "We have your diagnostic request"
+- To: `[field id="7b072996"]` · Subject: "We have your call request"
 - From name: Growth Marketing Partners · Reply-To: j.christopher.kenny@outlook.com
 
 Form actions after submit: `collect-submissions`, `email`, `email_2`.
