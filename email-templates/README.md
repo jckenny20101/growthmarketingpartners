@@ -32,9 +32,20 @@ Field shortcodes (`[field id="…"]` uses the element id of each input):
 | Backup day | `41d242c` |
 | Backup time | `30e5dc5c` |
 
+## Book a diagnostic: visitor confirmation
+
+Sent to the visitor (form action `email_2`) with the details of their request.
+
+- `book-a-diagnostic-confirmation.html` / `.min.html`
+- To: `[field id="7b072996"]` · Subject: "We have your diagnostic request"
+- From name: Growth Marketing Partners · Reply-To: j.christopher.kenny@outlook.com
+
+Form actions after submit: `collect-submissions`, `email`, `email_2`.
+
 ### Caveat
 
 Elementor's editor and MCP tools strip HTML tags from the form's message setting when they
 save it. The template was written straight into the page's `_elementor_data` post meta via the
 WordPress REST API. If the contact page is re-saved in the Elementor editor and the email turns
-into plain text again, re-apply the `.min.html` file the same way.
+into plain text again, re-apply both `.min.html` files the same way. Saving the form through the
+Elementor MCP `manage-elements` tool also strips them, so re-apply after any such edit.

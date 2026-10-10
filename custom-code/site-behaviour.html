@@ -1,0 +1,240 @@
+<style>
+/* Hide click focus rings; keep them for keyboard users */
+:where(a,button,summary,details,[role=tab],[tabindex]):focus:not(:focus-visible){outline:none !important}
+/* Growth Consulting site behaviour: mega menu motion and open state. Content and layout live in Elementor. */
+details.gc-mega-item > summary::-webkit-details-marker{display:none}
+details.gc-mega-item > summary{box-shadow:inset 0 0 0 transparent;transition:box-shadow .2s}
+details.gc-mega-item[open] > summary{box-shadow:inset 0 -2px 0 var(--signal)}
+details.gc-mega-item > summary .gc-plus{transition:transform .2s}
+details.gc-mega-item[open] > summary .gc-plus{transform:rotate(45deg)}
+.gc-mega-scrim{position:fixed;inset:0;background:rgba(17,18,20,.16);opacity:0;pointer-events:none;transition:opacity .2s;z-index:99}
+html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
+@keyframes gcMegaIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes gcMegaUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes gcPop{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
+.gc-calc .gc-pop{animation:gcPop .35s ease-out}
+@media (prefers-reduced-motion:no-preference){
+ details.gc-mega-item[open] > .gc-mega-panel{animation:gcMegaIn .22s cubic-bezier(.2,.7,.2,1) both}
+ details.gc-mega-item[open] > .gc-mega-panel > * > *{animation:gcMegaUp .34s cubic-bezier(.2,.7,.2,1) both}
+ details.gc-mega-item[open] > .gc-mega-panel > * > *:nth-child(2){animation-delay:.04s}
+ details.gc-mega-item[open] > .gc-mega-panel > * > *:nth-child(3){animation-delay:.08s}
+}
+/* Contact form: day and time pills */
+.gc-slots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;width:100%}
+.gc-slots-t{grid-template-columns:repeat(3,minmax(0,1fr))}
+.gc-slot{appearance:none;-webkit-appearance:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;padding:8px 6px;border:1px solid var(--line);border-radius:0;background:transparent;color:var(--ink);font:inherit;font-size:15px;line-height:1.25;text-align:center;white-space:normal;cursor:pointer;transition:border-color .15s,background-color .15s,color .15s}
+.gc-slot small{font-size:12px;color:var(--ink-3)}
+.gc-slot small:empty{display:none}
+.gc-slot:hover{border-color:var(--ink)}
+.gc-slot[aria-checked=true]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.gc-slot[aria-checked=true] small{color:var(--surface);opacity:.75}
+.gc-slot:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+/* Slots already booked on the Google Calendar */
+.gc-slot:disabled,.gc-slot:disabled:hover{border-color:var(--line);background:transparent;color:var(--ink-3);opacity:.45;text-decoration:line-through;cursor:not-allowed}
+.gc-sr{position:absolute!important;left:0;bottom:0;width:1px!important;height:1px!important;min-height:0!important;padding:0!important;border:0!important;opacity:0!important;clip-path:inset(50%);pointer-events:none}
+@media (max-width:480px){.gc-slot{font-size:13px;padding:6px 2px}}
+.gc-slots-f{grid-template-columns:repeat(4,minmax(0,1fr))}
+.gc-slots-f .gc-slot{min-height:48px;font-size:14px}
+.gc-slot[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.gc-hide-js{display:none!important}
+.gc-addlink{grid-column:1/-1;justify-self:start;background:none;border:0;padding:0;font:inherit;font-size:15px;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+@media (max-width:600px){.gc-slots-f{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<script>
+(function(){
+  function megaMenu(){
+    var items=[].slice.call(document.querySelectorAll('details.gc-mega-item'));
+    if(!items.length) return;
+    var root=document.documentElement;
+    var fine=window.matchMedia('(hover: hover) and (pointer: fine)');
+    var scrim=document.createElement('div');
+    scrim.className='gc-mega-scrim';
+    document.body.appendChild(scrim);
+    function sync(){ root.classList.toggle('gc-mega-open', items.some(function(d){ return d.open; })); }
+    function closeAll(except){ items.forEach(function(d){ if(d!==except && d.open) d.open=false; }); sync(); }
+    items.forEach(function(d){
+      var timer, hoverOpenedAt=0, summary=d.querySelector('summary');
+      d.addEventListener('toggle', function(){ if(d.open) closeAll(d); sync(); });
+      d.addEventListener('mouseenter', function(){
+        if(!fine.matches) return;
+        clearTimeout(timer);
+        timer=setTimeout(function(){ if(!d.open){ d.open=true; hoverOpenedAt=Date.now(); } }, 90);
+      });
+      d.addEventListener('mouseleave', function(){
+        if(!fine.matches) return;
+        clearTimeout(timer);
+        timer=setTimeout(function(){ d.open=false; }, 220);
+      });
+      if(summary) summary.addEventListener('click', function(e){ if(d.open && Date.now()-hoverOpenedAt<700) e.preventDefault(); });
+    });
+    document.addEventListener('click', function(e){ if(!e.target.closest('details.gc-mega-item')) closeAll(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key!=='Escape') return;
+      var open=items.filter(function(d){ return d.open; })[0];
+      if(!open) return;
+      open.open=false; sync();
+      var s=open.querySelector('summary'); if(s) s.focus();
+    });
+  }
+  function calculators(){
+    var boxes=[].slice.call(document.querySelectorAll('.gc-calc'));
+    if(!boxes.length) return;
+    function money(m){
+      if(m>=100) return '$'+Math.round(m)+'M';
+      if(m>=1) return '$'+(Math.round(m*10)/10).toString()+'M';
+      return '$'+Math.round(m*1000)+'K';
+    }
+    boxes.forEach(function(box){
+      function el(c){ return box.querySelector('.'+c); }
+      var t=el('gc-calc-target'), a=el('gc-calc-acv'), w=el('gc-calc-win');
+      if(!t||!a||!w) return;
+      function put(c, v){ var n=el(c); if(!n || n.textContent===v) return; n.textContent=v; n.classList.remove('gc-pop'); void n.offsetWidth; n.classList.add('gc-pop'); }
+      function calc(){
+        var T=parseFloat(t.value), A=parseFloat(a.value), W=parseFloat(w.value);
+        if(!(T>0) || !(A>0) || !(W>0) || W>100) return;
+        var deals=T*1000/A, opps=deals/(W/100), pipe=opps*A/1000;
+        put('gc-calc-pipeline', money(pipe));
+        put('gc-calc-coverage', (pipe/T).toFixed(1)+'\u00d7');
+        put('gc-calc-opps', Math.round(opps).toLocaleString());
+        put('gc-calc-monthly', Math.round(opps/12).toLocaleString());
+      }
+      [t,a,w].forEach(function(i){ i.addEventListener('input', calc); });
+      calc();
+    });
+    document.addEventListener('submit', function(e){
+      if(e.target && e.target.closest && e.target.closest('.gc-calc')){ e.preventDefault(); e.stopImmediatePropagation(); }
+    }, true);
+  }
+  function scheduler(){
+    var d1=document.getElementById('gc-date-1'); if(!d1 || d1.dataset.gcSlots) return;
+    var MT='America/Edmonton', SLOTS=[[12,13],[15,16],[16,17]], DAYS=10;
+    // Google Calendar availability. Leave id or key empty to show every slot.
+    var GCAL={id:'',key:''}, BUSY=null;
+    function pad(n){ return (n<10?'0':'')+n; }
+    function iso(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+    function mtToday(){ var a=new Intl.DateTimeFormat('en-CA',{timeZone:MT,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()).split('-'); return new Date(+a[0],+a[1]-1,+a[2]); }
+    function mtInstant(day,h){
+      var guess=Date.UTC(day.getFullYear(),day.getMonth(),day.getDate(),h), p={};
+      new Intl.DateTimeFormat('en-US',{timeZone:MT,hourCycle:'h23',year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric'}).formatToParts(new Date(guess)).forEach(function(x){ p[x.type]=x.value; });
+      return new Date(guess-(Date.UTC(+p.year,+p.month-1,+p.day,+p.hour%24,+p.minute)-guess));
+    }
+    function hr(h){ return (h>12?h-12:h)+(h<12?' am':' pm'); }
+    var tf=new Intl.DateTimeFormat(undefined,{hour:'numeric',minute:'2-digit'});
+    var days=[], d=mtToday();
+    while(days.length<DAYS || days[days.length-1].getDay()!==5){ d.setDate(d.getDate()+1); if(d.getDay()%6) days.push(new Date(d)); }
+    function weekend(v){ var a=v.split('-'); return !(new Date(+a[0],+a[1]-1,+a[2]).getDay()%6); }
+    function group(cls,label){ var g=document.createElement('div'); g.className='gc-slots '+cls; g.setAttribute('role','radiogroup'); g.setAttribute('aria-label',label); return g; }
+    function pill(g,html,val,ctl){
+      var b=document.createElement('button'); b.type='button'; b.className='gc-slot'; b.setAttribute('role','radio'); b.setAttribute('aria-checked','false'); b.dataset.value=val; b.innerHTML=html;
+      b.addEventListener('click',function(){
+        ctl.value=val; ctl.dispatchEvent(new Event('input',{bubbles:true})); ctl.dispatchEvent(new Event('change',{bubbles:true}));
+      });
+      g.appendChild(b); return b;
+    }
+    function sync(g,ctl){ [].forEach.call(g.children,function(b){ b.setAttribute('aria-checked',String(b.dataset.value===ctl.value)); }); }
+    var pairs=[];
+    [1,2].forEach(function(n){
+      var di=document.getElementById('gc-date-'+n), ti=document.getElementById('gc-time-'+n); if(!di||!ti) return;
+      di.dataset.gcSlots='1';
+      di.min=iso(days[0]); di.max=iso(days[days.length-1]);
+      var ph=ti.options[0]; if(ph && !/MT$/.test(ph.value)){ ph.value=''; ph.disabled=true; ti.value=''; }
+      var dl=document.querySelector('label[for="gc-date-'+n+'"]'), tl=document.querySelector('label[for="gc-time-'+n+'"]');
+      var dg=group('gc-slots-d',dl?dl.textContent.replace(' *',''):'Day');
+      days.forEach(function(day,i){
+        var b=pill(dg,'<small>'+day.toLocaleDateString('en-US',{weekday:'short'})+'</small>'+day.toLocaleDateString('en-US',{month:'short',day:'numeric'}),iso(day),di);
+        if(!i) b.style.gridColumnStart=day.getDay();
+      });
+      var tg=group('gc-slots-t',tl?tl.textContent.replace(' *',''):'Time');
+      var tp=SLOTS.map(function(s){ return pill(tg,hr(s[0]).replace(/ pm$/,'')+' to '+hr(s[1])+'<small class="gc-slot-local"></small>',ti.options[SLOTS.indexOf(s)+1]?ti.options[SLOTS.indexOf(s)+1].value:'',ti); });
+      di.classList.add('gc-sr'); ti.classList.add('gc-sr'); di.tabIndex=-1; ti.tabIndex=-1;
+      di.insertAdjacentElement('afterend',dg); ti.insertAdjacentElement('afterend',tg);
+      function local(){
+        var a=(di.value||iso(days[0])).split('-'), day=new Date(+a[0],+a[1]-1,+a[2]);
+        tp.forEach(function(b,i){
+          var s=mtInstant(day,SLOTS[i][0]), e=mtInstant(day,SLOTS[i][1]), same=s.getHours()===SLOTS[i][0] && s.getDate()===day.getDate();
+          b.querySelector('.gc-slot-local').textContent=same?'':'Your time '+tf.format(s)+' to '+tf.format(e);
+        });
+      }
+      di.addEventListener('change',function(){ di.setCustomValidity(di.value && weekend(di.value)?'We are not available on weekends. Please pick a weekday.':''); sync(dg,di); local(); check(); mark(); });
+      ti.addEventListener('change',function(){ sync(tg,ti); check(); });
+      local(); pairs.push([di,ti,dg,tg,tp]);
+    });
+    var b2=document.getElementById('gc-date-2'), t2=document.getElementById('gc-time-2');
+    if(b2 && t2 && !b2.required){
+      var c1=b2.closest('.e-con'), c2=t2.closest('.e-con');
+      c1.classList.add('gc-hide-js'); c2.classList.add('gc-hide-js');
+      var add=document.createElement('button'); add.type='button'; add.className='gc-addlink'; add.textContent='+ Add a backup time (optional)';
+      add.addEventListener('click',function(){ c1.classList.remove('gc-hide-js'); c2.classList.remove('gc-hide-js'); add.remove(); var f=c1.querySelector('.gc-slot'); if(f) f.focus(); });
+      c1.parentNode.insertBefore(add,c1);
+    }
+    function booked(day,i){
+      if(!BUSY) return false;
+      var s=+mtInstant(day,SLOTS[i][0]), e=+mtInstant(day,SLOTS[i][1]);
+      return BUSY.some(function(b){ return b[0]<e && b[1]>s; });
+    }
+    function toDay(v){ var a=v.split('-'); return new Date(+a[0],+a[1]-1,+a[2]); }
+    function mark(){
+      if(!BUSY) return;
+      pairs.forEach(function(p){
+        var di=p[0], ti=p[1], dg=p[2], tg=p[3], tp=p[4];
+        [].forEach.call(dg.children,function(b){
+          var day=toDay(b.dataset.value), full=SLOTS.every(function(s,i){ return booked(day,i); });
+          b.disabled=full; b.title=full?'Fully booked':'';
+          if(full && di.value===b.dataset.value){ di.value=''; sync(dg,di); }
+        });
+        tp.forEach(function(b,i){
+          var off=!!di.value && booked(toDay(di.value),i);
+          b.disabled=off; b.title=off?'Already booked':'';
+          if(off && ti.value===b.dataset.value){ ti.value=''; sync(tg,ti); }
+        });
+      });
+    }
+    function setBusy(list){ BUSY=list; mark(); }
+    if(GCAL.id && GCAL.key && window.fetch){
+      var t0=mtInstant(days[0],0).toISOString(), last=new Date(days[days.length-1]); last.setDate(last.getDate()+1);
+      var t1=mtInstant(last,0).toISOString(), api='https://www.googleapis.com/calendar/v3/';
+      fetch(api+'freeBusy?key='+encodeURIComponent(GCAL.key),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({timeMin:t0,timeMax:t1,timeZone:MT,items:[{id:GCAL.id}]})})
+        .then(function(r){ return r.json(); })
+        .then(function(j){
+          var c=j && j.calendars && j.calendars[GCAL.id];
+          if(c && !c.errors && c.busy){ setBusy(c.busy.map(function(b){ return [Date.parse(b.start),Date.parse(b.end)]; })); return; }
+          // Fallback: read events from a calendar shared publicly as free/busy
+          return fetch(api+'calendars/'+encodeURIComponent(GCAL.id)+'/events?singleEvents=true&maxResults=250&timeMin='+encodeURIComponent(t0)+'&timeMax='+encodeURIComponent(t1)+'&key='+encodeURIComponent(GCAL.key))
+            .then(function(r){ return r.json(); })
+            .then(function(j){
+              if(!j || !j.items) return;
+              setBusy(j.items.filter(function(e){ return e.status!=='cancelled' && e.transparency!=='transparent'; }).map(function(e){
+                var s=e.start.dateTime?Date.parse(e.start.dateTime):+mtInstant(toDay(e.start.date),0), f=e.end.dateTime?Date.parse(e.end.dateTime):+mtInstant(toDay(e.end.date),0);
+                return [s,f];
+              }));
+            });
+        })
+        .catch(function(){});
+    }
+    function check(){
+      if(pairs.length<2) return;
+      var same=pairs[0][0].value && pairs[0][0].value===pairs[1][0].value && pairs[0][1].value && pairs[0][1].value===pairs[1][1].value;
+      pairs[1][1].setCustomValidity(same?'Please pick a backup that differs from your first choice.':'');
+    }
+  }
+  function focusPicker(){
+    var fi=document.getElementById('gc-focus'); if(!fi || fi.dataset.gcPills) return; fi.dataset.gcPills='1';
+    var msg=document.getElementById('gc-message');
+    var OPTS=['Full pipeline diagnostic','Segments and positioning','Pricing and packaging','Paid','Outbound','Partners','Content','Other'];
+    var g=document.createElement('div'); g.className='gc-slots gc-slots-f'; g.setAttribute('role','group'); g.setAttribute('aria-label','What would you like to fix?');
+    OPTS.forEach(function(o){
+      var b=document.createElement('button'); b.type='button'; b.className='gc-slot'; b.setAttribute('aria-pressed','false'); b.textContent=o;
+      b.addEventListener('click',function(){
+        var on=b.getAttribute('aria-pressed')!=='true'; b.setAttribute('aria-pressed',String(on));
+        fi.value=[].filter.call(g.children,function(x){ return x.getAttribute('aria-pressed')==='true'; }).map(function(x){ return x.textContent; }).join(', ');
+        if(o==='Other' && msg){ msg.classList.toggle('gc-hide-js',!on); msg.required=on; if(on) msg.focus(); }
+      });
+      g.appendChild(b);
+    });
+    fi.classList.add('gc-sr'); fi.tabIndex=-1; fi.insertAdjacentElement('afterend',g);
+    if(msg) msg.classList.add('gc-hide-js');
+  }
+  function init(){ megaMenu(); calculators(); scheduler(); focusPicker(); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>
