@@ -33,5 +33,8 @@ Every `manage-elements` save rewrites the whole document. In testing on 2026-10-
 - silently ignored `background-size`, `background-position` and `background-repeat` for gradient
   backgrounds (why the timeline rule fix lives in the custom code).
 
+- dropped `margin-inline: auto` on the Fintech page's tab menu (fixed in the custom code). Note that atomic
+  tab parts have no `elementor-element-<id>` class; target them with `[data-id="…"]`.
+
 Before using it, back up `_elementor_data` via `GET /wp-json/wp/v2/pages/<id>?context=edit`, and diff after.
 Small text changes are safer written directly into `_elementor_data` through the REST API.
