@@ -85,3 +85,18 @@
 .gt-bad{background:var(--danger-soft);color:var(--danger)}
 @media (max-width:1024px){.gt-in{grid-template-columns:minmax(0,1fr);gap:var(--space-6)}.gt-intro{position:static}}
 @media (max-width:600px){.gt-card{padding:var(--space-5)}.gt-scale{grid-template-columns:repeat(5,minmax(0,1fr))}.gt-scale label{font-size:11px;min-height:44px}.gt-bar{grid-template-columns:90px 1fr 40px}}
+/* home page: build vs. partner calculator */
+.gth-on .gth-role{display:inline-flex;align-items:center;gap:10px;cursor:pointer}
+.gth-on .gth-chk{width:18px;height:18px;margin:0;accent-color:var(--ink);flex:0 0 auto;cursor:pointer}
+.gth-on .gth-cur{font-family:var(--font-mono),monospace;font-size:var(--fs-data);color:var(--ink-2);margin-right:4px}
+.gth-on input.gth-in{width:7.5em;height:34px;padding:0 8px;border:1px solid var(--line-strong);border-radius:2px;background:var(--surface-raised);color:var(--ink);font:400 var(--fs-data)/1 var(--font-mono),monospace;text-align:right;appearance:textfield;-moz-appearance:textfield;margin:-6px 0}
+.gth-on input.gth-in::-webkit-outer-spin-button,.gth-on input.gth-in::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.gth-on input.gth-in:focus{outline:2px solid var(--focus);outline-offset:1px}
+.gth-on input.gth-in:disabled{opacity:.45}
+.gth-on .gth-off{opacity:.5}
+.gth-on .gth-off .gth-role span{text-decoration:line-through}
+.gth-gate{display:flex;flex-direction:column;gap:var(--space-4);margin-top:var(--space-4);font-family:var(--font-sans),sans-serif}
+.gth-gate .gt-gate{border-top:1px solid var(--line)}
+.gth-gate input[type=text],.gth-gate input[type=email]{width:100%;height:48px;padding:0 14px;border:1px solid var(--line-strong);border-radius:2px;background:var(--surface-raised);color:var(--ink);font:400 16px/1 var(--font-sans),sans-serif}
+.gth-gate .gt-field label{font-family:var(--font-mono),monospace;font-size:var(--fs-data);color:var(--ink-3)}
+.gth-gate .gth-open{align-self:flex-start}

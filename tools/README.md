@@ -37,3 +37,22 @@ If a page section is deleted or rebuilt (new `data-id`), its tool stops appearin
   meeting to qualified 50%, qualified to closed-won 25%.
 - Sales capacity planner assumes new reps ramp evenly (half productive during ramp).
 - Next-dollar check verdicts follow the page's rule 3; "room to scale" also requires the average to be within target.
+
+## Home page: build vs. partner calculator
+
+`inhouse()` in `gt.js` turns the "Hiring in-house" card on the home page (section `38800e20`) into a live
+calculator. It works on the existing Elementor elements rather than adding a new section:
+
+- Each role's salary becomes an input (defaults: the Robert Half midpoints already on the page), with a
+  checkbox to include or drop the role. The heading counts included roles ("What a four-person…").
+- Benefits and payroll default to 42.86% of salary (wages = 70% of total compensation, per the BLS note),
+  recruiting fees to 20%.
+- The first-year total, the benefits and recruiting lines, and the dark comparison card (team total,
+  one VP hire all-in, bar widths) update as people type. The Growth Marketing Partners bar stays at 25% of
+  the team cost, matching "about 75% less"; no GMP price is shown.
+- Numbers are not gated (they were already public). "Email me this breakdown" uses the same gate and
+  Website tools form, with the tool name "In-house team cost calculator".
+- Element ids it relies on: roles `5d3a80e3/dd1530b`, `1af52347/1897d4e5`, `fefc3d4/649af03f`,
+  `68d7e80c/402a71c9`, `5ea75ab5/333d4db`; benefits `5aefb0dd/11e9dd50`; recruiting `791f4c25/765ae815`;
+  total `2f8b5944`; heading `5d681796`; eyebrow `6e2c97f1`; comparison `2107fe2e`, `2a32fcf5`, `7221d3e`;
+  bars `7a3159fa`, `46ff16`, `6c178c83`; note `5d4bb9f7`. If any are rebuilt, the card falls back to static.
