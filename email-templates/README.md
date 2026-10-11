@@ -65,5 +65,6 @@ inbox preview still shows the person and result (for example "Dana used the Disc
 | Website tools (`5bffcb2a`, page 284) | New tool lead from the website | Your results from Growth Marketing Partners |
 | Snapshot requests (`8258be06`, page 284) | New AI shortlist snapshot request | We have your AI shortlist snapshot request |
 
-All emails set From to ckenny@growthmarketingpartners.ca. FluentSMTP decides the actual sending account; it must be
-connected to the Google Workspace mailbox (or allow that From address) for this to take effect.
+All emails set From to ckenny@growthmarketingpartners.ca. FluentSMTP sends them through a **Gmail / Google Workspace API**
+connection (OAuth client "FluentSMTP" in Google Cloud project `gmp-website-261010`). Don't use an SMTP connection
+(smtp.gmail.com): the Railway host blocks outgoing SMTP ports, so sends hang until they time out.
