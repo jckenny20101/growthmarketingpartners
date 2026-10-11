@@ -58,6 +58,8 @@ Elementor MCP `manage-elements` tool also strips them, so re-apply after any suc
 Elementor's atomic forms replace `[field id="…"]` in the message, To and Reply-To, but **not in the subject**,
 so every subject is fixed text. Each template starts with a hidden preheader that uses field shortcodes, so the
 inbox preview still shows the person and result (for example "Dana used the Discount leakage calculator.").
+The preheader has no zero-width padding and no text colour matched to the background: both are classic
+spam-filter signals, and Outlook/Hotmail was already sending these emails to Junk.
 
 | Form | Internal subject | Visitor subject |
 |------|------------------|-----------------|
