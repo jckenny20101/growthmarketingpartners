@@ -5,6 +5,7 @@
 - **/benchmarks/** (page 285): five themed sections of sourced figures, built by `build/benchmarks.py` from the home page research section. Re-check figures quarterly.
 - **/tools/** (page 288): the tools hub, rendered by `gt.js` after the hero (`data-id="7001700a"`).
 - Footer: "Free tools" and "Benchmarks" added to the Company column.
+- Header (site part 58): "Tools" added to the desktop menu between Approach and Results, and "Free tools" to the mobile menu's Company group.
 
 ## Guides (posts, shown on /insights/)
 
