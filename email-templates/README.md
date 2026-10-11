@@ -14,7 +14,8 @@ Form email settings:
 | Setting   | Value |
 |-----------|-------|
 | To        | j.christopher.kenny@outlook.com |
-| Subject   | `New call request: [field id="5cec3a85"]` |
+| From      | ckenny@growthmarketingpartners.ca |
+| Subject   | New call request from the website |
 | From name | Growth Marketing Partners |
 | Reply-To  | `[field id="7b072996"]` (the visitor's email) |
 | Send as   | HTML |
@@ -40,7 +41,7 @@ Sent to the visitor (form action `email_2`) with the details of their request.
 
 - `book-a-diagnostic-confirmation.html` / `.min.html`
 - To: `[field id="7b072996"]` · Subject: "We have your call request"
-- From name: Growth Marketing Partners · Reply-To: j.christopher.kenny@outlook.com
+- From name: Growth Marketing Partners · From and Reply-To: ckenny@growthmarketingpartners.ca
 
 Form actions after submit: `collect-submissions`, `email`, `email_2`.
 
@@ -51,3 +52,18 @@ save it. The template was written straight into the page's `_elementor_data` pos
 WordPress REST API. If the contact page is re-saved in the Elementor editor and the email turns
 into plain text again, re-apply both `.min.html` files the same way. Saving the form through the
 Elementor MCP `manage-elements` tool also strips them, so re-apply after any such edit.
+
+## Subjects and preview text
+
+Elementor's atomic forms replace `[field id="…"]` in the message, To and Reply-To, but **not in the subject**,
+so every subject is fixed text. Each template starts with a hidden preheader that uses field shortcodes, so the
+inbox preview still shows the person and result (for example "Dana used the Discount leakage calculator.").
+
+| Form | Internal subject | Visitor subject |
+|------|------------------|-----------------|
+| Book a diagnostic (`20d1f704`, page 115) | New call request from the website | We have your call request |
+| Website tools (`5bffcb2a`, page 284) | New tool lead from the website | Your results from Growth Marketing Partners |
+| Snapshot requests (`8258be06`, page 284) | New AI shortlist snapshot request | We have your AI shortlist snapshot request |
+
+All emails set From to ckenny@growthmarketingpartners.ca. FluentSMTP decides the actual sending account; it must be
+connected to the Google Workspace mailbox (or allow that From address) for this to take effect.

@@ -3,6 +3,7 @@
   // asks for name and work email before showing results, and emails the results through the
   // "Website tools" form (page 284, kept as a draft) so leads land in Elementor > Submissions.
   var FORM={post:284, id:'5bffcb2a', name:'Website tools'};
+  var FORM_REQUEST={post:284, id:'8258be06', name:'Website tools: snapshot requests'}; // own email subjects
   var STORE='gmpToolsContact';
 
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
@@ -655,7 +656,8 @@
     f.push(['esubj','Email subject',r.esubj||('Your '+nm+' results'),'text']); f.push(['etitle','Email title',r.etitle?r.etitle.replace('{name}',c.name):('Here are your results, '+c.name+'.'),'text']); f.push(['eintro','Email intro',r.eintro||'A copy of what you calculated on our website, so you can come back to it or share it with your team.','text']);
     var fd=new FormData();
     fd.append('action','elementor_pro_atomic_forms_send_form'); fd.append('_nonce',nonce);
-    fd.append('post_id',FORM.post); fd.append('form_id',FORM.id); fd.append('form_name',FORM.name);
+    var F=t.request?FORM_REQUEST:FORM;
+    fd.append('post_id',F.post); fd.append('form_id',F.id); fd.append('form_name',F.name);
     fd.append('referer_title',document.title); fd.append('referrer',location.href);
     f.forEach(function(x,i){ var p='form_fields['+i+']'; fd.append(p+'[id]',x[0]); fd.append(p+'[type]',x[3]); fd.append(p+'[label]',x[1]); fd.append(p+'[name]',x[0]); fd.append(p+'[options]','null'); fd.append(p+'[value]',x[2]); });
     var timeout=new Promise(function(res){ setTimeout(function(){ res(false); },10000); });
