@@ -317,12 +317,13 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
 .gt-q legend{padding:0;font-size:var(--fs-body);line-height:1.5;color:var(--ink)}
 .gt-q legend small{display:block;font-family:var(--font-mono),monospace;font-size:var(--fs-caption);color:var(--ink-3);margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em}
 .gt-scale{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
-.gt-scale label{position:relative;display:flex;align-items:center;justify-content:center;min-height:40px;padding:6px 4px;border:1px solid var(--line);font-size:13px;line-height:1.2;text-align:center;color:var(--ink-2);cursor:pointer;transition:border-color .15s,background .15s}
-.gt-scale input{position:absolute;opacity:0;pointer-events:none}
-.gt-scale label:hover{border-color:var(--ink)}
-.gt-scale input:checked+span{color:var(--surface)}
-.gt-scale label:has(input:checked){background:var(--ink);border-color:var(--ink)}
-.gt-scale label:has(input:focus-visible){outline:2px solid var(--signal);outline-offset:2px}
+.gt-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px}
+.gt-scale label,.gt-opts label{position:relative;display:flex;align-items:center;justify-content:center;min-height:40px;padding:6px 4px;border:1px solid var(--line);font-size:13px;line-height:1.2;text-align:center;color:var(--ink-2);cursor:pointer;transition:border-color .15s,background .15s}
+.gt-scale input,.gt-opts input{position:absolute;opacity:0;pointer-events:none}
+.gt-scale label:hover,.gt-opts label:hover{border-color:var(--ink)}
+.gt-scale input:checked+span,.gt-opts input:checked+span{color:var(--surface)}
+.gt-scale label:has(input:checked),.gt-opts label:has(input:checked){background:var(--ink);border-color:var(--ink)}
+.gt-scale label:has(input:focus-visible),.gt-opts label:has(input:focus-visible){outline:2px solid var(--signal);outline-offset:2px}
 .gt-bars{display:flex;flex-direction:column;gap:var(--space-3)}
 .gt-bar{display:grid;grid-template-columns:110px 1fr 44px;align-items:center;gap:var(--space-3);font-size:var(--fs-body-s)}
 .gt-bar i{display:block;height:10px;background:var(--surface-sunken);position:relative}
@@ -356,6 +357,20 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
 .gth-gate input[type=text],.gth-gate input[type=email]{width:100%;height:48px;padding:0 14px;border:1px solid var(--line-strong);border-radius:2px;background:var(--surface-raised);color:var(--ink);font:400 16px/1 var(--font-sans),sans-serif}
 .gth-gate .gt-field label{font-family:var(--font-mono),monospace;font-size:var(--fs-data);color:var(--ink-3)}
 .gth-gate .gth-open{align-self:flex-start}
+/* anchors land below the sticky header */
+.gt-sec,[data-id="38800e20"]{scroll-margin-top:90px}
+/* tools hub */
+.gt-hubsec{border-top:0}
+.gt-hubwrap{max-width:var(--layout-max);margin:0 auto;display:flex;flex-direction:column;gap:var(--space-7)}
+.gt-hubgroup{display:flex;flex-direction:column;gap:var(--space-4)}
+.gt-hubgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:var(--space-4)}
+.gt-hubcard{display:flex;flex-direction:column;gap:10px;padding:var(--space-5);background:var(--surface-raised);border:1px solid var(--line);color:var(--ink);text-decoration:none;transition:border-color .15s,transform .15s}
+.gt-hubcard:hover{border-color:var(--ink);transform:translateY(-2px)}
+.gt-hubcard strong{font-family:var(--font-serif),serif;font-weight:400;font-size:var(--fs-title-l);line-height:1.25}
+.gt-hubcard span:not(.gt-tag){font-size:var(--fs-body-s);line-height:1.5;color:var(--ink-2)}
+.gt-hubcard em{margin-top:auto;font-style:normal;font-size:15px;text-decoration:underline;text-underline-offset:3px}
+/* links written inside body text look like links */
+.elementor .e-paragraph-base a:not([class]){text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
 </style>
 <script>
 (function(){
@@ -711,6 +726,267 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
     }
   }];
 
+  // ---------- choice and text helpers for the newer tools ----------
+  function choice(id,qi,label,opts,note){
+    var h='<fieldset class="gt-q"><legend>'+(note?'<small>'+esc(note)+'</small>':'')+esc(label)+'</legend><div class="gt-opts">';
+    opts.forEach(function(o,v){ h+='<label><input type="radio" name="'+id+'-c'+qi+'" value="'+v+'" data-q="'+esc(label)+'" data-l="'+esc(o)+'"><span>'+esc(o)+'</span></label>'; });
+    return h+'</div></fieldset>';
+  }
+  function picked(card,qi,label){
+    var c=card.querySelector('input[name$="-c'+qi+'"]:checked');
+    need(c,'Please answer: '+label);
+    return parseInt(c.value,10);
+  }
+  function tfield(key,label,ph,value){
+    return '<div class="gt-field"><label for="'+key+'">'+esc(label)+'</label><input type="text" id="'+key+'" data-k="'+key.split('-').pop()+'" placeholder="'+esc(ph||'')+'" value="'+esc(value||'')+'"></div>';
+  }
+  function rel(v,med,lowerBetter){ return lowerBetter?(med-v)/med:(v-med)/med; }
+  function status(g){ return g>0.1?'Ahead of median':(g<-0.1?'Behind median':'Around median'); }
+
+  var NODEC=[
+    ['How many people are involved in the decision?',['1 to 3','4 to 6','7 to 10','11 or more'],[0,1,2,3],'Large buying group','Map every stakeholder and agree a mutual plan with a named owner for each step.'],
+    ['Is the budget owner involved yet?',['From the start','Joined later','Not yet'],[0,1,3],'No budget owner yet','Ask your champion to bring the budget owner into the next meeting.'],
+    ['Is there a date forcing a decision?',['A hard date','A soft target','None'],[0,1,3],'No forcing date','Tie the decision to a business event they care about, such as a launch, renewal or budget cycle.'],
+    ['Have they said what doing nothing costs them?',['Clear and quantified','Mentioned, but vague','Not discussed'],[0,2,3],'Cost of inaction unclear','Put a number on what waiting costs them each quarter, in their words.'],
+    ['How many options are they still comparing?',['Just you','Two','Three or more','Still exploring'],[0,1,2,3],'Too many options','Make a clear recommendation and narrow the choice instead of adding more.'],
+    ['Since the main demo, have they asked for more demos, references or information?',['No','Once or twice','Repeatedly'],[0,1,3],'Repeated requests for more information','Treat it as fear of getting it wrong: give a firm recommendation and reduce the risk instead of sending more material.'],
+    ['Is there a trial or pilot?',['Yes, with agreed success criteria','Yes, without criteria','No trial'],[0,2,1],'Pilot without success criteria','Agree in writing what success looks like before the pilot starts.'],
+    ['Do you have a champion who has bought something like this before?',['Yes','Keen, but untested','No clear champion'],[0,1,3],'No proven champion','Find the person who has led a purchase like this before, and give them what they need to sell it internally.']
+  ];
+  var PM_NAMES=['Per-seat','Hybrid: platform fee plus usage or credits','Usage-based','Outcome-based'];
+  var PM_Q=[
+    ['As customers get more value, what grows?',[['The number of people using it',[3,1,0,0]],['The volume of work, data or transactions',[0,2,3,0]],['A measurable business result',[0,1,0,3]],['Not much; value is fairly fixed',[2,1,0,0]]]],
+    ['How much does usage vary between customers of a similar size?',[['Very little',[2,1,0,0]],['Somewhat',[1,2,1,0]],['A lot',[0,2,3,1]]]],
+    ['Does AI in your product do work a person used to do?',[['No',[2,1,0,0]],['Some of it',[0,3,1,1]],['Most of it',[0,1,2,3]]]],
+    ['What does AI cost you to run for each customer?',[['Close to nothing',[2,1,0,0]],['A noticeable amount',[0,3,1,0]],['A lot, and it varies',[0,2,3,1]]]],
+    ['Can you measure the outcome you deliver, and show it came from you?',[['Yes, clearly',[0,0,0,3]],['Partly',[0,1,1,1]],['No',[1,1,1,0]]]],
+    ['How do your buyers prefer to pay?',[['A fixed, predictable budget',[3,2,0,0]],['For what they use',[0,1,3,1]],['A mix of both',[1,3,1,0]]]],
+    ['What can your billing system do today?',[['Simple subscriptions only',[2,1,0,0]],['Meter usage',[0,2,2,1]],['Meter usage and run credits',[0,3,2,1]]]]
+  ];
+  var PM_WHY=['Value grows with the number of people using it, buyers want predictable budgets and AI costs are low.',
+    'Buyers get a predictable base, and a usage or credit component captures heavy use and covers AI costs.',
+    'Value and cost both scale with volume, and buyers are happy to pay for what they use.',
+    'You can count the result you deliver and show it came from you, so price can follow the value.'];
+  var PM_WATCH=['If AI starts doing the work of users, seat counts shrink. Add a usage or credit component before that happens.',
+    'Keep it explainable: one platform fee and one usage or credit unit. Hybrid buyers often struggle to understand their bill.',
+    'Revenue gets harder to forecast. Commit-and-draw-down contracts and usage alerts keep buyers and finance comfortable.',
+    'Expect attribution disputes and lumpy revenue. Start with one outcome that is easy to count, and keep a platform fee underneath.'];
+  var PM_STEP=['Test whether customers would accept a small usage or credit add-on for AI features, before seat counts come under pressure.',
+    'Pick one value metric for the variable part and model last year’s customers on it before announcing anything.',
+    'Model last year’s invoices under the new metric, then offer annual commits with draw-down to protect forecasting.',
+    'Run a pilot with a few customers on one countable outcome, with a platform fee as a floor.'];
+
+  var MORE=[
+  { key:'efficiency', name:'SaaS efficiency benchmark', anchor:'6420b47e', where:'after',
+    eyebrow:'Efficiency benchmark', h2:'How do your numbers compare with the median?',
+    lede:'Enter six numbers most boards already track. We compare each one with the latest published medians and name the one holding you back.',
+    tag:'Benchmark', title:'Your last 12 months', button:'Compare my numbers',
+    form:function(id){
+      return '<div class="gt-grid">'+field(id+'-g','ARR growth (%)',30)+field(id+'-p','CAC payback (months)',18)+field(id+'-n','Net revenue retention (%)',104)+field(id+'-r','Gross revenue retention (%)',88)+field(id+'-c','New CAC ratio ($ spent per $1 of new ARR)',1.8)+field(id+'-m','Gross margin (%)',75,{max:100})+'</div>'
+        +'<p class="gt-fine">Medians: growth 22% (SaaS Capital, 2026), CAC payback 16 to 20 months, NRR 101%, GRR 88%, new CAC ratio $2.00 and gross margin 77% (Benchmarkit, 2025). <a href="/benchmarks/">See all benchmarks</a>.</p>';
+    },
+    compute:function(card){
+      var g=val(card,'g'), p=val(card,'p'), n=val(card,'n'), r=val(card,'r'), c=val(card,'c'), m=val(card,'m');
+      need(!isNaN(g)&&p>0&&n>0&&r>0&&r<=100&&c>0&&m>0&&m<=100,'Please fill in all six numbers.');
+      var M=[['Growth',rel(g,22),pct(g,1)+' (median 22%)','Growth is below the median. Before adding spend, find out whether the constraint is pipeline volume, conversion or retention.'],
+        ['CAC payback',rel(p,18,true),months(p)+' (median 16 to 20)','CAC payback is longer than most. Move budget toward programs with the fastest payback, and fix the conversion step losing the most revenue before scaling spend.'],
+        ['Retention',Math.min(rel(n,101),rel(r,88)),'NRR '+pct(n,1)+' · GRR '+pct(r,1)+' (medians 101% · 88%)','Retention is your weakest number. SaaS Capital finds the companies with the highest retention grow far faster than the median; an expansion motion and a value metric that grows with use usually move it most.'],
+        ['New CAC ratio',rel(c,2,true),'$'+(Math.round(c*100)/100)+' per $1 (median $2.00)','You spend more than most to win new revenue. Put spend into the segments with the best win rates and payback, and judge programs on qualified opportunities, not leads.'],
+        ['Gross margin',rel(m,77),pct(m,1)+' (median 77%)','Gross margin is below the software median. If AI features are part of the cost, check what they cost to serve.']];
+      var w=M.slice().sort(function(a,b){ return a[1]-b[1]; })[0];
+      var rows=M.map(function(x){ return [x[0]+': '+status(x[1]).toLowerCase(), x[2]]; });
+      if(w[1]>=-0.1) return {hlabel:'Against the published medians', headline:'No metric behind the median', small:true, rows:rows,
+        insight:'Every number is at or ahead of the median. The next question is which one you can push into the top quartile, since that is usually where valuations are decided.'};
+      return {hlabel:'Your weakest metric against the median', headline:w[0], small:true, rows:rows, insight:w[3]};
+    }
+  },
+  { key:'shortlist', name:'AI shortlist snapshot', anchor:'3676712', where:'after', request:true,
+    eyebrow:'Free AI shortlist snapshot', h2:'Do you show up when buyers ask AI?',
+    lede:'Half of software buyers now start their research in an AI chatbot. We’ll ask ChatGPT, Perplexity and Gemini the questions your buyers ask, and show you who gets named, and what they say about you.',
+    tag:'Free snapshot', title:'Tell us what to check', button:'Request my snapshot',
+    form:function(id){
+      return '<div class="gt-grid">'+tfield(id+'-w','Your website','yourcompany.com')+tfield(id+'-k','What buyers search for','e.g. expense management software')+tfield(id+'-x','Up to three competitors','Competitor A, Competitor B')+tfield(id+'-m','Main market','e.g. North America, mid-market')+'</div>';
+    },
+    compute:function(card){
+      var w=textval(card,'w'), k=textval(card,'k'), x=textval(card,'x'), m=textval(card,'m');
+      need(w&&k,'Please add your website and what buyers search for.');
+      return {hlabel:'Your AI shortlist snapshot', headline:'Request received', small:true,
+        rows:[['Company',w],['Category',k],['Competitors',x||'We’ll suggest them'],['Market',m||'Not given'],['What you’ll get','How often you’re named against competitors, and what each AI says about you']],
+        insight:'We’ll ask the questions your buyers ask across ChatGPT, Perplexity and Gemini. We’ll be in touch by email to confirm the questions before we run them.',
+        esubj:'We have your AI shortlist snapshot request', etitle:'Thanks, {name}. We have your request.', eintro:'Here’s what you asked us to check. Nothing else is needed from you for now.'};
+    }
+  },
+  { key:'nodecision', name:'No-decision risk scorecard', anchor:'665069dd', where:'after',
+    eyebrow:'No-decision risk scorecard', h2:'Is your biggest deal about to stall?',
+    lede:'Between 40% and 60% of qualified deals end with the buyer deciding nothing. Answer eight questions about one live deal and see its risk of stalling, and what to do next.',
+    tag:'Scorecard', title:'One live deal', button:'Score this deal',
+    form:function(id){ return '<div class="gt-qs">'+NODEC.map(function(q,i){ return choice(id,i,q[0],q[1]); }).join('')+'</div>'; },
+    compute:function(card){
+      var pts=0, drv=[];
+      NODEC.forEach(function(q,i){ var v=picked(card,i,q[0]), p=q[2][v]; pts+=p; if(p>0) drv.push({p:p,i:i,t:q[3],a:q[4]}); });
+      var max=NODEC.reduce(function(s,q){ return s+Math.max.apply(null,q[2]); },0), score=Math.round(pts/max*100);
+      var lvl=score<30?'Low':(score<55?'Moderate':'High');
+      drv.sort(function(a,b){ return b.p-a.p||a.i-b.i; });
+      var rows=[['Risk score',score+' / 100']];
+      for(var k=0;k<3;k++) rows.push(drv[k]?[drv[k].t,drv[k].a]:['','']);
+      rows.push(['Next step',drv[0]?drv[0].a:'Keep the plan and dates you have agreed.']);
+      return {hlabel:'Risk of ending in no decision', headline:lvl+' risk', small:true, rows:rows,
+        insight:lvl==='Low'?'This deal has the signals of one that closes: a decision maker, a date and a clear cost of waiting. Protect them, and don’t reopen the comparison.'
+          :'Indecision, not competitors, is the main reason deals stall. The research behind The JOLT Effect points to four moves: judge how indecisive the buyer is, offer a clear recommendation, limit exploration, and take risk off the table with pilots, opt-outs or guarantees.'};
+    }
+  },
+  { key:'pricemodel', name:'Pricing model selector', anchor:'53a666a7', where:'after',
+    eyebrow:'Pricing model selector', h2:'Seats, usage, hybrid or outcomes?',
+    lede:'Seven questions about how your customers get value and what AI costs you to run. We recommend a pricing model, explain why, and show what to watch out for.',
+    tag:'Selector', title:'How your product creates value', button:'Recommend a model',
+    form:function(id){ return '<div class="gt-qs">'+PM_Q.map(function(q,i){ return choice(id,i,q[0],q[1].map(function(o){ return o[0]; })); }).join('')+'</div>'; },
+    compute:function(card){
+      var s=[0,0,0,0], mx=[0,0,0,0];
+      PM_Q.forEach(function(q,i){ var v=picked(card,i,q[0]); q[1][v][1].forEach(function(x,j){ s[j]+=x; }); });
+      PM_Q.forEach(function(q){ for(var j=0;j<4;j++) mx[j]+=Math.max.apply(null,q[1].map(function(o){ return o[1][j]; })); });
+      var fit=s.map(function(x,j){ return Math.round(x/mx[j]*100); });
+      var order=[0,1,2,3].sort(function(a,b){ return fit[b]-fit[a]||b-a; }), b=order[0], r=order[1];
+      return {hlabel:'Best fit for how you create value', headline:PM_NAMES[b], small:true,
+        rows:[['Best fit',PM_NAMES[b]+' ('+fit[b]+'% fit)'],['Runner-up',PM_NAMES[r]+' ('+fit[r]+'% fit)'],['Why',PM_WHY[b]],['Watch out for',PM_WATCH[b]],['First step',PM_STEP[b]]],
+        insight:'Hybrid pricing is now the most common primary model in B2B software (37%, up from 25% a year earlier), and 29% of companies already price AI with credits or tokens (Growth Unhinged, 2026). The right answer depends on how your customers get value, which is what these questions test.'};
+    }
+  },
+  { key:'aimargin', name:'AI feature margin calculator', anchor:'53a666a7', where:'after',
+    eyebrow:'AI margin calculator', h2:'What do AI features do to your gross margin?',
+    lede:'AI features cost money every time they run. Enter what a typical customer pays and uses, and see your margin with AI included, the price that protects it, and how much AI you can include.',
+    tag:'Calculator', title:'One typical customer, per month', button:'Check my margin',
+    form:function(id){
+      return '<div class="gt-grid">'+field(id+'-p','Price per customer a month ($)',2000)+field(id+'-g','Gross margin before AI (%)',80,{max:100})+field(id+'-u','Users who use AI features',25)+field(id+'-t','AI tasks per user a month',200)+field(id+'-c','Cost to run one AI task ($)',0.02)+field(id+'-x','Target gross margin (%)',75,{max:99})+'</div>';
+    },
+    compute:function(card){
+      var P=val(card,'p'), g=val(card,'g')/100, u=val(card,'u'), t=val(card,'t'), c=val(card,'c'), T=val(card,'x')/100;
+      need(P>0&&g>0&&g<=1&&u>=0&&t>=0&&c>=0&&T>0&&T<1,'Please fill in every number; margins must be between 0 and 100.');
+      var base=P*(1-g), ai=u*t*c, gm=(P-base-ai)/P, price=(base+ai)/(1-T), room=P*(1-T)-base, tasks=c>0?Math.max(0,room/c):Infinity;
+      var perTask=u*t>0?Math.max(0,room/(u*t)):Infinity;
+      return {hlabel:'Gross margin with AI included', headline:pct(gm*100,1),
+        rows:[['AI cost per customer a month','$'+num(ai)+' ('+pct(ai/P*100,1)+' of the price)'],['Margin change',(gm-g>=0?'+':'')+(Math.round((gm-g)*1000)/10)+' points'],['Price that holds a '+pct(T*100)+' margin','$'+num(price)+' a month'],['AI tasks you can include at today’s price',room>0?(isFinite(tasks)?num(tasks)+' a month':'Unlimited'):'None without missing the target'],['Cost per task needed at today’s usage',room>0?(isFinite(perTask)?'$'+(Math.round(perTask*10000)/10000):'Any'):'Not reachable']],
+        insight:gm>=T?'AI fits inside your target margin today. Set a fair-use allowance or credits now, so heavy users don’t erode it as adoption grows.'
+          :'AI pushes you below your target margin. The usual fixes are a credit allowance with paid top-ups, a higher tier for AI-heavy use, or cheaper models for routine tasks. Growth Unhinged’s 2026 survey puts the median AI gross margin target at about 50%, well below software’s 70 to 80%.'};
+    }
+  },
+  { key:'forecast', name:'Forecast accuracy checker', anchor:'be24d5e', where:'after',
+    eyebrow:'Forecast accuracy checker', h2:'Can your board trust the forecast?',
+    lede:'Enter your forecast at the start of each of the last four quarters, and what you actually booked. We show how accurate you were, and whether you lean high or low.',
+    tag:'Calculator', title:'Forecast against actual, last four quarters', button:'Check my forecast',
+    form:function(id){
+      return rowTable(id,[{name:'Four quarters ago',v:[1200,1050]},{name:'Three quarters ago',v:[1300,1240]},{name:'Two quarters ago',v:[1400,1180]},{name:'Last quarter',v:[1350,1290]}],
+        ['Quarter',{label:'Forecast ($K)',k:'f'},{label:'Actual bookings ($K)',k:'a'}]);
+    },
+    compute:function(card){
+      var names=['Four quarters ago','Three quarters ago','Two quarters ago','Last quarter'], q=[];
+      names.forEach(function(n,i){ var f=val(card,'f'+i), a=val(card,'a'+i); if(isNaN(f)&&isNaN(a)) return; need(f>0&&a>0,'Enter both numbers for '+n.toLowerCase()+'.'); q.push({n:n,f:f,a:a,e:(f-a)/a}); });
+      need(q.length>=2,'Enter at least two quarters.');
+      var acc=q.reduce(function(s,x){ return s+Math.max(0,1-Math.abs(x.e)); },0)/q.length*100, bias=q.reduce(function(s,x){ return s+x.e; },0)/q.length*100;
+      var rows=q.map(function(x){ return [x.n,'Forecast $'+num(x.f)+'K \u00b7 actual $'+num(x.a)+'K ('+(x.e>=0?'+':'')+(Math.round(x.e*1000)/10)+'%)']; });
+      while(rows.length<4) rows.push(['','']);
+      rows.push(['Bias',Math.abs(bias)<3?'Balanced':(bias>0?'Forecasts '+pct(bias,1)+' high on average':'Forecasts '+pct(-bias,1)+' low on average')]);
+      return {hlabel:'Average forecast accuracy', headline:pct(acc,1), rows:rows,
+        insight:bias>5?'You forecast high almost every quarter. That usually means deals are counted before the buyer has committed: tighten the exit criteria for your late stages, and track how often deals slip.'
+          :(bias<-5?'You forecast low, which hides real capacity and leads to under-investment. Check whether reps hold deals back until they are certain.'
+          :(acc>=90?'Your forecast is accurate and balanced. Keep stage definitions written down, and inspect any quarter that misses by more than 10%.':'Misses go both ways, which points to inconsistent stage definitions. Write down what each stage means and what has to be true to move a deal forward.'))};
+    }
+  },
+  { key:'nrr', name:'Net revenue retention calculator', anchor:'43592b1b', where:'after',
+    eyebrow:'Retention calculator', h2:'What is a few points of retention worth?',
+    lede:'Net revenue retention compounds. See where your ARR lands in a few years at today’s retention and at your target, and how much extra new business it would take to make up the gap.',
+    tag:'Calculator', title:'Your revenue today', button:'Show the difference',
+    form:function(id){
+      return '<div class="gt-grid">'+field(id+'-a','ARR today ($M)',10)+field(id+'-n','Net revenue retention today (%)',100)+field(id+'-t','Target net revenue retention (%)',110)+field(id+'-w','New-customer ARR a year ($M)',3)+field(id+'-y','Years ahead',3,{max:10})+'</div>';
+    },
+    compute:function(card){
+      var A=val(card,'a')*1e6, n=val(card,'n')/100, t=val(card,'t')/100, w=val(card,'w')*1e6, y=Math.round(val(card,'y'));
+      need(A>0&&n>0&&t>0&&w>=0&&y>=1&&y<=10,'Please fill in every number; years must be between 1 and 10.');
+      function run(r){ var a=A; for(var i=0;i<y;i++) a=a*r+w; return a; }
+      var now=run(n), tgt=run(t), S=0; for(var k=0;k<y;k++) S+=Math.pow(n,k);
+      var need2=(tgt-A*Math.pow(n,y))/S;
+      return {hlabel:'Extra ARR in '+y+' years at '+pct(t*100)+' retention', headline:(tgt-now>=0?'+':'')+money(tgt-now),
+        rows:[['ARR in '+y+' years at '+pct(n*100),money(now)],['ARR in '+y+' years at '+pct(t*100),money(tgt)],['From existing customers alone at '+pct(t*100),money(A*Math.pow(t,y))],['New-customer ARR a year to match, at today’s retention',money(need2)+' (today '+money(w)+')'],['Extra new business that would take',money(need2-w)+' a year']],
+        insight:'Retention compounds on the whole base every year, while new business only adds to it. SaaS Capital’s 2026 research finds the companies with the highest net revenue retention grow far faster than the median. Expansion pricing and a customer pipeline target are usually the cheapest growth available.'};
+    }
+  },
+  { key:'friction', name:'Onboarding friction audit', anchor:'5fd2f7a8', where:'append',
+    eyebrow:'Onboarding friction audit', h2:'How much friction is in your sign-up flow?',
+    lede:'People give up a financial sign-up after about 19 minutes on average, and the top reasons are that it took too long or asked for too much. Score your flow and see the fixes worth making first.',
+    tag:'Audit', title:'Your sign-up flow today', button:'Score my flow',
+    form:function(id){
+      return '<div class="gt-grid">'+field(id+'-s','Screens from start to funded',12)+field(id+'-f','Form fields the user fills in',25)+field(id+'-m','Typical minutes to finish',14)+field(id+'-d','Documents to upload',1)+'</div>'
+        +'<div class="gt-qs">'+choice(id,0,'How long does the identity check take?',['Instant','Minutes','Hours','Days'])+choice(id,1,'Can people save and come back later?',['Yes','No'])+choice(id,2,'Do you prefill what you already know or can look up?',['Yes','Partly','No'])+choice(id,3,'How do people first fund their account?',['Instant bank link','Card','Manual transfer only'])+'</div>';
+    },
+    compute:function(card){
+      var s=val(card,'s'), f=val(card,'f'), m=val(card,'m'), d=val(card,'d');
+      need(s>0&&f>=0&&m>0&&d>=0,'Please fill in the four numbers.');
+      var idc=picked(card,0,'identity check time'), sv=picked(card,1,'save and resume'), pf=picked(card,2,'prefill'), fu=picked(card,3,'funding method');
+      var parts=[
+        [Math.min(30,m/19*20),'Too long to finish','Cut the time to finish: move anything not needed for approval until after the account is open.'],
+        [Math.min(15,Math.max(0,f-10)*0.6),'Too many form fields','Remove or defer every field you don’t need to approve the account.'],
+        [Math.min(10,Math.max(0,s-6)),'Too many screens','Combine screens; each extra step is another place to quit.'],
+        [Math.min(10,d*4),'Document uploads','Replace uploads with database or open-banking checks where regulation allows.'],
+        [[0,3,8,12][idc],'Slow identity check','Use instant verification with manual review only for exceptions, and keep people moving while it runs.'],
+        [[0,6][sv],'No save and resume','Let people save and come back by email or text, so a missing document doesn’t mean starting over.'],
+        [[0,3,6][pf],'Asking for what you could look up','Prefill from what you already know: device data, address lookup and bank data.'],
+        [[0,2,8][fu],'Slow first funding','Offer an instant bank link for the first deposit, so people are funded before they lose interest.']];
+      var score=Math.min(100,Math.round(parts.reduce(function(t,p){ return t+p[0]; },0)));
+      var top=parts.filter(function(p){ return p[0]>0; }).sort(function(a,b){ return b[0]-a[0]; });
+      var gap=19-m, rows=[['Friction score',score+' / 100 (lower is better)'],['Time against the 19-minute average quit point',gap>=0?num(m)+' minutes, '+num(gap)+' minutes inside it':num(m)+' minutes, '+num(-gap)+' minutes past it']];
+      for(var k=0;k<3;k++) rows.push(top[k]?[top[k][1],top[k][2]]:['','']);
+      return {hlabel:'Onboarding friction score', headline:score+' / 100', rows:rows,
+        insight:'Signicat’s research finds 68% of consumers have abandoned a financial sign-up, and the top reasons are that it took too long, asked for too much personal information, or they changed their mind. Fix the biggest source of friction first, then measure each step’s drop-off before and after.'};
+    }
+  },
+  { key:'integration', name:'Integration time-to-value planner', anchor:'cbf5f22', where:'append',
+    eyebrow:'Integration planner', h2:'Where do the weeks go between signature and first transaction?',
+    lede:'For API and infrastructure companies, revenue starts at the first live transaction, not at signature. Map the stages, find the bottleneck and see what shortening it is worth.',
+    tag:'Planner', title:'Weeks spent at each stage', button:'Find my bottleneck',
+    form:function(id){
+      return rowTable(id,[{name:'Sandbox to first API call',v:[1]},{name:'Security and compliance review',v:[6]},{name:'Contract and legal',v:[4]},{name:'Integration build',v:[8]},{name:'Testing and certification',v:[4]},{name:'Go-live to first live transaction',v:[3]}],['Stage',{label:'Weeks',k:'w'}])
+        +'<div class="gt-grid">'+field(id+'-r','Monthly revenue per live customer ($)',2500)+field(id+'-n','New customers signed a month',4)+'</div>';
+    },
+    compute:function(card){
+      var names=['Sandbox to first API call','Security and compliance review','Contract and legal','Integration build','Testing and certification','Go-live to first live transaction'];
+      var w=names.map(function(n,i){ var v=val(card,'w'+i); return isNaN(v)?0:Math.max(0,v); }), R=val(card,'r'), N=val(card,'n');
+      need(R>0&&N>0,'Enter revenue per live customer and customers signed a month.');
+      var T=w.reduce(function(a,b){ return a+b; },0); need(T>0,'Enter the weeks for at least one stage.');
+      var bi=w.indexOf(Math.max.apply(null,w)), wk=4.345, per=T/wk*R, yr=per*N*12, half=w[bi]/2/wk*R*N*12;
+      return {hlabel:'Weeks from signature to first live transaction', headline:num(T)+' weeks',
+        rows:[['Biggest bottleneck',names[bi]+': '+num(w[bi])+' weeks ('+pct(w[bi]/T*100)+' of the total)'],['Revenue waiting per new customer',money(per)],['Revenue delayed each year, across new customers',money(yr)],['Halving the bottleneck is worth',money(half)+' a year, pulled forward'],['Second-longest stage',(function(){ var c=w.slice(); c[bi]=-1; var j=c.indexOf(Math.max.apply(null,c)); return names[j]+': '+num(w[j])+' weeks'; })()]],
+        insight:'Most of the time between signature and revenue usually sits in one or two stages, often security review or integration build. Pre-approved security packs, a guided first integration and a named owner during the sandbox stage usually shorten them most.'};
+    }
+  }];
+  MORE.forEach(function(t){ TOOLS.push(t); });
+
+  // pages each tool lives on, for the tools hub and links
+  var PAGES={quiz:'/services/go-to-market-diagnostic/',efficiency:'/services/go-to-market-diagnostic/',funnel:'/services/pipeline-programs/',cac:'/services/pipeline-programs/',marginal:'/services/pipeline-programs/',forecast:'/services/pipeline-programs/',
+    segments:'/services/segments-icp/',shortlist:'/services/segments-icp/',nodecision:'/services/segments-icp/',discount:'/services/pricing-packaging/',price:'/services/pricing-packaging/',pricemodel:'/services/pricing-packaging/',aimargin:'/services/pricing-packaging/',
+    capacity:'/industries/software-saas/',nrr:'/industries/software-saas/',onboarding:'/industries/fintech/',friction:'/industries/fintech/',api:'/industries/fintech/',integration:'/industries/fintech/'};
+  var GROUPS=[['Go-to-market diagnostic',['quiz','efficiency']],['Segments and positioning',['shortlist','segments','nodecision']],['Pricing and packaging',['discount','price','pricemodel','aimargin']],['Pipeline programs',['funnel','cac','marginal','forecast']],['Software and SaaS',['capacity','nrr','inhouse']],['Fintech',['onboarding','friction','api','integration']]];
+  function hub(){
+    var anchor=document.querySelector('[data-id="7001700a"]');
+    if(!anchor||document.getElementById('gt-hub')) return;
+    var byKey={}; TOOLS.forEach(function(t){ byKey[t.key]=t; });
+    byKey.inhouse={name:'In-house team cost calculator',h2:'What would a full growth team cost you in year one?'};
+    PAGES.inhouse='/';
+    var h='<section class="gt-sec gt-hubsec" id="gt-hub"><div class="gt-hubwrap">';
+    GROUPS.forEach(function(g){
+      h+='<div class="gt-hubgroup"><p class="gt-eye">'+esc(g[0])+'</p><div class="gt-hubgrid">';
+      g[1].forEach(function(k){ var t=byKey[k]; if(!t) return; h+='<a class="gt-hubcard" href="'+PAGES[k]+(k==='inhouse'?'#gth':'#gt-'+k)+'"><span class="gt-tag">'+esc(t.request?'Free snapshot':(t.tag||'Calculator'))+'</span><strong>'+esc(t.name)+'</strong><span>'+esc(t.h2)+'</span><em>Open the tool →</em></a>'; });
+      h+='</div></div>';
+    });
+    h+='</div></section>';
+    var wrap=document.createElement('div'); wrap.innerHTML=h; anchor.parentNode.insertBefore(wrap.firstChild,anchor.nextSibling);
+  }
+  function deeplink(){
+    var id=(location.hash||'').slice(1); if(!/^gt-|^gth$/.test(id)) return;
+    var el=id==='gth'?document.querySelector('[data-id="38800e20"]'):document.getElementById(id); if(!el) return;
+    var panel=el.closest('[role="tabpanel"],.e-tab-content-base');
+    if(panel&&panel.id){ var tab=document.querySelector('[aria-controls="'+panel.id+'"]'); if(tab) tab.click(); }
+    setTimeout(function(){ el.scrollIntoView({block:'start'}); },150);
+  }
+
   // ---------- rendering ----------
   function sectionHtml(t){
     var id='gt-'+t.key;
@@ -721,13 +997,13 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
       +'<form class="gt-form" novalidate>'+t.form(id)+'</form>'
       +'<p class="gt-err" role="alert"></p>'
       +'<button type="button" class="gt-btn gt-go">'+esc(t.button)+' →</button>'
-      +'<div class="gt-gate gt-hide"><h4 class="gt-gate-h">Where should we send your results?</h4>'
+      +'<div class="gt-gate gt-hide"><h4 class="gt-gate-h">'+(t.request?'Where should we send your snapshot?':'Where should we send your results?')+'</h4>'
       +'<div class="gt-grid"><div class="gt-field"><label for="'+id+'-gn">Name *</label><input type="text" id="'+id+'-gn" autocomplete="name"></div>'
       +'<div class="gt-field"><label for="'+id+'-ge">Work email *</label><input type="email" id="'+id+'-ge" autocomplete="email"></div>'
       +'<div class="gt-field"><label for="'+id+'-gc">Company</label><input type="text" id="'+id+'-gc" autocomplete="organization"></div></div>'
-      +'<p class="gt-fine">We’ll show your results here and email you a copy. We may follow up once about them. See our <a href="/privacy-policy/">privacy policy</a>.</p>'
+      +'<p class="gt-fine">'+(t.request?'We\u2019ll email you to confirm the details, then send your snapshot. See our <a href="/privacy-policy/">privacy policy</a>.':'We\u2019ll show your results here and email you a copy. We may follow up once about them. See our <a href="/privacy-policy/">privacy policy</a>.')+'</p>'
       +'<p class="gt-err gt-gate-err" role="alert"></p>'
-      +'<button type="button" class="gt-btn gt-btn-signal gt-unlock">Show my results →</button></div>'
+      +'<button type="button" class="gt-btn gt-btn-signal gt-unlock">'+(t.request?'Send my request':'Show my results')+' \u2192</button></div>'
       +'<div class="gt-res gt-hide" aria-live="polite" tabindex="-1"></div>'
       +'</div></div></section>';
   }
@@ -749,6 +1025,8 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
       ['hlabel','Result label',r.hlabel,'text'],['headline','Result',r.headline,'text']];
     rows.forEach(function(x,i){ f.push(['r'+(i+1)+'l','Row '+(i+1)+' label',x[0]||' ','text']); f.push(['r'+(i+1)+'v','Row '+(i+1),x[1]||' ','text']); });
     f.push(['insight','What it means',r.insight,'text']); f.push(['inputs','Inputs',r.inputs||summary(card),'text']);
+    var nm=/^[A-Z][a-z]/.test(t.name)?t.name.charAt(0).toLowerCase()+t.name.slice(1):t.name;
+    f.push(['esubj','Email subject',r.esubj||('Your '+nm+' results'),'text']); f.push(['etitle','Email title',r.etitle?r.etitle.replace('{name}',c.name):('Here are your results, '+c.name+'.'),'text']); f.push(['eintro','Email intro',r.eintro||'A copy of what you calculated on our website, so you can come back to it or share it with your team.','text']);
     var fd=new FormData();
     fd.append('action','elementor_pro_atomic_forms_send_form'); fd.append('_nonce',nonce);
     fd.append('post_id',FORM.post); fd.append('form_id',FORM.id); fd.append('form_name',FORM.name);
@@ -764,7 +1042,8 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
     if(!anchor || document.getElementById('gt-'+t.key)) return;
     var wrap=document.createElement('div'); wrap.innerHTML=sectionHtml(t);
     var sec=wrap.firstChild;
-    if(t.where==='append') anchor.appendChild(sec); else anchor.parentNode.insertBefore(sec,anchor.nextSibling);
+    if(t.where==='append') anchor.appendChild(sec);
+    else { var ref=anchor; while(ref.nextElementSibling&&ref.nextElementSibling.classList&&ref.nextElementSibling.classList.contains('gt-sec')) ref=ref.nextElementSibling; ref.parentNode.insertBefore(sec,ref.nextSibling); }
     var card=sec.querySelector('.gt-card'), err=card.querySelector('.gt-err'), go=card.querySelector('.gt-go'),
         gate=card.querySelector('.gt-gate'), gerr=card.querySelector('.gt-gate-err'), unlock=card.querySelector('.gt-unlock'), res=card.querySelector('.gt-res');
     var unlocked=false, last=null;
@@ -778,6 +1057,7 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
     }
     function show(note){
       res.innerHTML=resultHtml(last,note); res.classList.remove('gt-hide');
+      if(t.request){ var rb=res.querySelector('.gt-resend'); if(rb) rb.remove(); }
       res.querySelector('.gt-resend').addEventListener('click',function(){
         var b=this; b.disabled=true; b.textContent='Sending…';
         var r=calc(); if(!r){ b.disabled=false; b.textContent='Email me these results'; return; }
@@ -798,8 +1078,9 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
       if(!calc()){ return; }
       save(c); unlock.disabled=true; unlock.textContent='Sending…';
       send(t,last,c,card).then(function(ok){
-        unlocked=true; gate.classList.add('gt-hide'); go.classList.remove('gt-hide'); go.textContent='Update my results →';
-        show(ok?{text:'We’ve emailed a copy to '+c.email+'.'}:{text:'We couldn’t email a copy just now, but here are your results.',warn:true});
+        unlocked=true; gate.classList.add('gt-hide'); if(!t.request){ go.classList.remove('gt-hide'); go.textContent='Update my results \u2192'; }
+        show(ok?{text:t.request?'We\u2019ve emailed a confirmation to '+c.email+'.':'We\u2019ve emailed a copy to '+c.email+'.'}:{text:t.request?'We couldn\u2019t send your request just now. Please try again in a moment.':'We couldn\u2019t email a copy just now, but here are your results.',warn:true});
+        if(t.request&&!ok){ unlocked=false; gate.classList.remove('gt-hide'); unlock.disabled=false; unlock.textContent='Send my request \u2192'; }
         res.focus({preventScroll:true}); res.scrollIntoView({behavior:'smooth',block:'nearest'});
         try{ if(window.dataLayer) window.dataLayer.push({event:'gmp_tool_lead',tool:t.key}); }catch(e){}
       });
@@ -882,7 +1163,7 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
       });
     });
   }
-  function init(){ TOOLS.forEach(function(t){ try{ mount(t); }catch(e){ if(window.console) console.warn('GMP tool '+t.key,e); } }); try{ inhouse(); }catch(e){ if(window.console) console.warn('GMP in-house calculator',e); } }
+  function init(){ TOOLS.forEach(function(t){ try{ mount(t); }catch(e){ if(window.console) console.warn('GMP tool '+t.key,e); } }); try{ inhouse(); }catch(e){ if(window.console) console.warn('GMP in-house calculator',e); } try{ hub(); deeplink(); }catch(e){} }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();
 </script>
