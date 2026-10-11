@@ -1,0 +1,29 @@
+{"slug":"pricing-in-the-agent-era","category":"Pricing and packaging",
+"title":"Pricing in the agent era: what replaces the seat",
+"excerpt":"Per-seat pricing assumed value grows with users. AI breaks that. What B2B software companies are moving to, when each model fits, and how to change without losing customers.",
+"read":"8 minute read",
+"sections":[
+["The seat is losing its job",[
+"Per-seat pricing worked because value grew with the number of people using the product. AI changes that. When the software does work a person used to do, customers need fewer seats, and a seat-based price shrinks just as the product gets more useful.",
+"AI also costs money every time it runs. Classic software had near-zero cost per use; AI features do not. A price that ignores usage can quietly turn your heaviest users into your least profitable ones."]],
+["What companies are moving to",[
+"Kyle Poyar’s 2026 State of B2B Monetization survey of more than 230 software and AI companies found hybrid pricing is now the most common primary model, at 37%, up from 25% a year earlier. Respondents expect flat-fee and seat-based pricing to shrink sharply over the next three years.",
+"AI credits are spreading too: 29% of companies already price AI with credits or tokens, and another 33% plan to within six to twelve months. The same survey puts the median gross margin target for AI products at about 50%, well below the 70 to 80% that software usually earns.",
+"There is a retention angle as well. Benchmarkit’s 2025 benchmarks show gross revenue retention of 92% under usage-based pricing, against 88% under subscription and hybrid models."]],
+["Four models, and when each fits",[
+"<strong>Per-seat</strong> still fits when value grows with the number of people using the product, buyers want predictable budgets, and AI costs are small.",
+"<strong>Hybrid</strong>, a platform fee plus usage or credits, fits most companies in transition. Buyers and finance get a predictable base, and the variable part captures heavy use and covers AI costs.",
+"<strong>Usage-based</strong> fits when value and cost both scale with volume: transactions, data, API calls or tasks completed.",
+"<strong>Outcome-based</strong> fits only when you can count the result you deliver and show it came from you, such as resolved tickets or recovered revenue. Attribution disputes and lumpy revenue are the price."]],
+["Hybrid, done well",[
+"<strong>One fee, one meter.</strong> A platform fee plus a single usage or credit unit. Every extra meter makes the bill harder to understand and the deal harder to approve.",
+"<strong>Pick a value metric customers recognise.</strong> Something they already count, which grows when they get more value.",
+"<strong>Commit and draw down.</strong> Annual commitments with usage drawn down against them keep revenue forecastable and budgets predictable.",
+"<strong>Make credits legible.</strong> Say what a credit buys in plain terms, show usage in the product, and alert customers before they run out."]],
+["Watch the margin",[
+"Before setting an AI price, work out what a typical customer costs to serve: users, tasks per user and cost per task. That tells you how much AI you can include at today’s price, and what to charge for the rest. The <a href=\"/services/pricing-packaging/#gt-aimargin\">AI feature margin calculator</a> does this in a minute."]],
+["Changing without losing customers",[
+"Model last year’s invoices on the new structure before announcing anything, so you know who pays more and who pays less. Launch with new customers first. Move existing customers at renewal, with a clear reason and, where it matters, a period at their current price. Then watch expansion, not just new bookings.",
+"To see which model fits your product, start with the <a href=\"/services/pricing-packaging/#gt-pricemodel\">pricing model selector</a>. To test a change before you make it, use the <a href=\"/services/pricing-packaging/#gt-price\">price increase simulator</a>. Our <a href=\"/services/pricing-packaging/\">pricing and packaging</a> work takes you from research to rollout."]]
+],
+"sources":[["Growth Unhinged (Kyle Poyar)","The 2026 State of B2B SaaS and AI Monetization Report","https://www.growthunhinged.com/p/the-state-of-b2b-monetization-in-2026"],["OpenMeter","Pricing in 2026: what 230 companies say (summary of the Growth Unhinged survey)","https://openmeter.io/blog/monetization-benchmarks-2026"],["Benchmarkit","2025 B2B SaaS Performance Metrics Benchmarks","https://www.benchmarkit.ai/2025benchmarks"]]}

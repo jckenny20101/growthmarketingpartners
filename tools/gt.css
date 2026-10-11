@@ -116,3 +116,5 @@
 .gt-hubcard em{margin-top:auto;font-style:normal;font-size:15px;text-decoration:underline;text-underline-offset:3px}
 /* links written inside body text look like links */
 .elementor .e-paragraph-base a:not([class]){text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.gt-consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;color:var(--ink-3);cursor:pointer}
+.gt-consent input{width:16px;height:16px;margin:2px 0 0;flex:0 0 auto;accent-color:var(--ink)}

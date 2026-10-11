@@ -1,0 +1,28 @@
+{"slug":"the-no-decision-problem","category":"Conversion and testing",
+"title":"The no-decision problem: why good deals stall, and how to keep them moving",
+"excerpt":"Most lost deals are not lost to a competitor. They end with the buyer deciding nothing. What the research says causes it, and what keeps deals moving.",
+"read":"7 minute read",
+"sections":[
+["Your biggest competitor is doing nothing",[
+"Ebsta and Pavilion’s 2025 GTM Benchmarks, built on 655,000 opportunities, put the average new-logo win rate at 19%. Most of the other 81% are not lost to a rival. In the research behind The JOLT Effect, which analysed 2.5 million recorded sales conversations, between 40% and 60% of qualified deals ended with the buyer deciding nothing at all.",
+"Gartner’s research points the same way: buyers with moderate to high uncertainty are 78% less likely to complete a high-quality deal. The problem is rarely that the buyer prefers someone else. It is that they are not sure enough to choose anyone."]],
+["Why buyers freeze",[
+"The JOLT research found that indecision is driven more by fear of making the wrong choice than by fear of missing out. Buyers worry about choosing badly, overpaying and not getting what was promised. More options and more information often make that worse, not better.",
+"Bigger buying groups add to it. Forrester’s 2026 research puts the typical purchase at 13 people inside the buying company and 9 outside it. Each new voice adds a new risk to manage."]],
+["The signs a deal is stalling",[
+"<strong>Requests for more.</strong> Another demo, another reference, another document after the main demo. It looks like interest; it is often fear.",
+"<strong>No date.</strong> Nothing in the buyer’s world forces a decision by a particular time.",
+"<strong>A vague cost of waiting.</strong> Nobody has said, in numbers, what doing nothing costs them.",
+"<strong>New people late.</strong> Stakeholders appear near the end with questions nobody planned for.",
+"<strong>A long comparison.</strong> The buyer is still evaluating three or more options, or is “still exploring”."]],
+["What keeps deals moving",[
+"<strong>Judge indecision early.</strong> Ask what would make the buyer comfortable choosing, and listen for worry about getting it wrong rather than about price or features.",
+"<strong>Offer a recommendation.</strong> Indecisive buyers want to be told what to do. Recommend one option and say why, instead of presenting a menu.",
+"<strong>Limit exploration.</strong> Narrow the choice. Fewer options and focused proof beat more demos and more material.",
+"<strong>Take risk off the table.</strong> Pilots with agreed success criteria, phased rollouts and clear exit terms reduce the fear that stops a decision.",
+"<strong>Bring the decision maker in early.</strong> Ebsta and Pavilion found win rates are 55% higher when decision makers take part in the first two stages of a deal."]],
+["Fix it upstream",[
+"Most stalled deals were at risk from the day they entered the pipeline. Make a named budget owner and a decision date part of what qualified means. Agree a mutual plan with the buyer, with owners and dates for each step. Package proof for each stakeholder: finance, security and the people who will use it.",
+"To see how exposed a live deal is, use the <a href=\"/services/segments-icp/#gt-nodecision\">no-decision risk scorecard</a>. To find where deals leak across your whole funnel, use the <a href=\"/services/pipeline-programs/#gt-funnel\">funnel leak finder</a>. If deals keep stalling at the same point, our <a href=\"/services/go-to-market-diagnostic/\">go-to-market diagnostic</a> finds out why."]]
+],
+"sources":[["Ebsta and Pavilion","2025 GTM Benchmarks","https://benchmarks.ebsta.com/2025-gtm-benchmarks"],["Matthew Dixon and Ted McKenna","The JOLT Effect (Portfolio, 2022)","https://www.penguin.com.au/books/the-jolt-effect-9780593538111"],["Gartner","Insights abstract on buyer uncertainty and deal quality (2024)","https://www.gartner.com/en/documents/5088931"],["Forrester","The State of Business Buying, 2026, as reported by Digital Commerce 360","https://digitalcommerce360.com/2026/01/22/forrester-b2b-buying-ai-2026/"]]}

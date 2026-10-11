@@ -1,0 +1,30 @@
+{"slug":"the-19-minute-window-fintech-onboarding","category":"Conversion and testing",
+"title":"The 19-minute window: fixing fintech onboarding drop-off",
+"excerpt":"Most people who start a financial sign-up give up somewhere along the way, and institutions are losing more clients to slow onboarding every year. Where the drop-off happens and what fixes it.",
+"read":"7 minute read",
+"sections":[
+["A leak that keeps getting worse",[
+"Signicat’s research on financial onboarding found that 68% of consumers have abandoned a financial sign-up at least once, and that the average person gives up at around 18 minutes and 53 seconds. On the institution side, Fenergo’s October 2025 survey of 600 decision-makers found that 70% of financial institutions lost clients to slow or inefficient onboarding in 2025, up from 67% in 2024 and 48% in 2023.",
+"Paid acquisition gets people to the start of the flow. Onboarding decides how many of them you keep."]],
+["Why people give up",[
+"In Signicat’s research, three reasons tie at the top, each cited by 21% of people: the process took too long, it asked for too much personal information, or they changed their mind. None of these is solved by a nicer button. They are solved by asking for less, asking at the right time, and keeping people moving."]],
+["Where the drop-off happens",[
+"<strong>Starting sign-up.</strong> Long first screens and unclear reasons to continue.",
+"<strong>Identity check.</strong> Manual reviews, failed document scans and waiting with no feedback.",
+"<strong>Document upload.</strong> Every document is a reason to stop and come back later, and many never do.",
+"<strong>First funding.</strong> Slow or manual transfers lose people who have done everything else.",
+"<strong>First use.</strong> A funded account that is never used is the last leak, and it is often not measured at all."]],
+["What fixes it",[
+"<strong>Ask for less, later.</strong> Collect only what you need to approve the account. Everything else can wait until after it is open.",
+"<strong>Prefill what you can.</strong> Address lookup, device data and bank data remove typing and errors.",
+"<strong>Make identity checks instant by default.</strong> Use automated verification, keep manual review for exceptions, and let people keep going while it runs.",
+"<strong>Let people save and come back.</strong> A missing document should not mean starting again.",
+"<strong>Fund instantly.</strong> An instant bank link for the first deposit gets people funded before they lose interest.",
+"<strong>Say why you ask.</strong> A line explaining why a piece of information is needed reduces the sense of being asked for too much."]],
+["Measure every step",[
+"Track drop-off at each step, time from start to funded, and the share of funded accounts that are active after 30 days. Change one step at a time, and compare before and after.",
+"Score your flow with the <a href=\"/industries/fintech/#gt-friction\">onboarding friction audit</a>, then see what each improvement is worth with the <a href=\"/industries/fintech/#gt-onboarding\">onboarding calculator</a>."]],
+["For B2B and API fintechs",[
+"The same logic applies to business customers, measured in weeks rather than minutes. Revenue starts at the first live transaction, not at signature, and the time in between usually sits in security review and integration build. Map it with the <a href=\"/industries/fintech/#gt-integration\">integration time-to-value planner</a>, and see what faster go-live is worth with the <a href=\"/industries/fintech/#gt-api\">sandbox to live calculator</a>. More on how we work with fintechs is on our <a href=\"/industries/fintech/\">fintech page</a>."]]
+],
+"sources":[["Signicat","The Battle to Onboard","https://www.signicat.com/the-battle-to-onboard"],["Fenergo","Global financial institutions struggle with rising client losses (October 2025)","https://resources.fenergo.com/newsroom/global-financial-institutions-struggle-with-rising-client-losses-and-compliance-costs-as-ai-adoption-increases-fenergo"]]}

@@ -627,6 +627,7 @@
       +'<div class="gt-field"><label for="'+id+'-ge">Work email *</label><input type="email" id="'+id+'-ge" autocomplete="email"></div>'
       +'<div class="gt-field"><label for="'+id+'-gc">Company</label><input type="text" id="'+id+'-gc" autocomplete="organization"></div></div>'
       +'<p class="gt-fine">'+(t.request?'We\u2019ll email you to confirm the details, then send your snapshot. See our <a href="/privacy-policy/">privacy policy</a>.':'We\u2019ll show your results here and email you a copy. We may follow up once about them. See our <a href="/privacy-policy/">privacy policy</a>.')+'</p>'
+      +(t.request?'':'<label class="gt-consent"><input type="checkbox" class="gt-research"> <span>Optional: include my numbers, anonymised, in Growth Marketing Partners\u2019 benchmark research. Nothing that identifies me or my company is ever published.</span></label>')
       +'<p class="gt-err gt-gate-err" role="alert"></p>'
       +'<button type="button" class="gt-btn gt-btn-signal gt-unlock">'+(t.request?'Send my request':'Show my results')+' \u2192</button></div>'
       +'<div class="gt-res gt-hide" aria-live="polite" tabindex="-1"></div>'
@@ -649,7 +650,7 @@
     var f=[['gname','Name',c.name,'text'],['gemail','Work email',c.email,'email'],['gcompany','Company',c.company||'Not given','text'],['tool','Tool',t.name,'text'],['page','Page',location.host+location.pathname,'text'],
       ['hlabel','Result label',r.hlabel,'text'],['headline','Result',r.headline,'text']];
     rows.forEach(function(x,i){ f.push(['r'+(i+1)+'l','Row '+(i+1)+' label',x[0]||' ','text']); f.push(['r'+(i+1)+'v','Row '+(i+1),x[1]||' ','text']); });
-    f.push(['insight','What it means',r.insight,'text']); f.push(['inputs','Inputs',r.inputs||summary(card),'text']);
+    f.push(['insight','What it means',r.insight,'text']); f.push(['inputs','Inputs',r.inputs||summary(card),'text']); f.push(['research','Benchmark research consent',c.research?'Yes':'No','text']);
     var nm=/^[A-Z][a-z]/.test(t.name)?t.name.charAt(0).toLowerCase()+t.name.slice(1):t.name;
     f.push(['esubj','Email subject',r.esubj||('Your '+nm+' results'),'text']); f.push(['etitle','Email title',r.etitle?r.etitle.replace('{name}',c.name):('Here are your results, '+c.name+'.'),'text']); f.push(['eintro','Email intro',r.eintro||'A copy of what you calculated on our website, so you can come back to it or share it with your team.','text']);
     var fd=new FormData();
@@ -697,11 +698,12 @@
     });
     unlock.addEventListener('click',function(){
       gerr.textContent='';
-      var c={name:gn.value.trim(),email:ge.value.trim(),company:gc.value.trim()};
+      var rb=gate.querySelector('.gt-research');
+      var c={name:gn.value.trim(),email:ge.value.trim(),company:gc.value.trim(),research:!!(rb&&rb.checked)};
       if(!c.name){ gerr.textContent='Please enter your name.'; gn.focus(); return; }
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c.email)){ gerr.textContent='Please enter a valid work email.'; ge.focus(); return; }
       if(!calc()){ return; }
-      save(c); unlock.disabled=true; unlock.textContent='Sending…';
+      save({name:c.name,email:c.email,company:c.company}); unlock.disabled=true; unlock.textContent='Sending…';
       send(t,last,c,card).then(function(ok){
         unlocked=true; gate.classList.add('gt-hide'); if(!t.request){ go.classList.remove('gt-hide'); go.textContent='Update my results \u2192'; }
         show(ok?{text:t.request?'We\u2019ve emailed a confirmation to '+c.email+'.':'We\u2019ve emailed a copy to '+c.email+'.'}:{text:t.request?'We couldn\u2019t send your request just now. Please try again in a moment.':'We couldn\u2019t email a copy just now, but here are your results.',warn:true});
@@ -763,7 +765,7 @@
     var g=document.createElement('div'); g.className='gth-gate';
     g.innerHTML='<button type="button" class="gt-linkbtn gth-open">Email me this breakdown</button>'
       +'<div class="gt-gate gt-hide"><div class="gt-grid"><div class="gt-field"><label for="gth-gn">Name *</label><input type="text" id="gth-gn" autocomplete="name"></div><div class="gt-field"><label for="gth-ge">Work email *</label><input type="email" id="gth-ge" autocomplete="email"></div><div class="gt-field"><label for="gth-gc">Company</label><input type="text" id="gth-gc" autocomplete="organization"></div></div>'
-      +'<p class="gt-fine">We’ll email you this breakdown and may follow up once about it. See our <a href="/privacy-policy/">privacy policy</a>.</p><p class="gt-err" role="alert"></p><button type="button" class="gt-btn gt-btn-signal gth-send">Email my breakdown →</button></div><p class="gt-note gt-hide" aria-live="polite"></p>';
+      +'<p class="gt-fine">We’ll email you this breakdown and may follow up once about it. See our <a href="/privacy-policy/">privacy policy</a>.</p>'+'<label class="gt-consent"><input type="checkbox" class="gt-research"> <span>Optional: include my numbers, anonymised, in Growth Marketing Partners\u2019 benchmark research. Nothing that identifies me or my company is ever published.</span></label>'+'<p class="gt-err" role="alert"></p><button type="button" class="gt-btn gt-btn-signal gth-send">Email my breakdown →</button></div><p class="gt-note gt-hide" aria-live="polite"></p>';
     host.appendChild(g);
     var gate=g.querySelector('.gt-gate'), err=g.querySelector('.gt-err'), msg=g.querySelector('.gt-note'), btn=g.querySelector('.gth-send');
     var gn=g.querySelector('#gth-gn'), ge=g.querySelector('#gth-ge'), gc=g.querySelector('#gth-gc'), c0=store();
@@ -771,10 +773,11 @@
     g.querySelector('.gth-open').addEventListener('click',function(){ gate.classList.remove('gt-hide'); this.classList.add('gt-hide'); (gn.value?ge:gn).focus(); });
     btn.addEventListener('click',function(){
       err.textContent='';
-      var c={name:gn.value.trim(),email:ge.value.trim(),company:gc.value.trim()};
+      var rb=g.querySelector('.gt-research');
+      var c={name:gn.value.trim(),email:ge.value.trim(),company:gc.value.trim(),research:!!(rb&&rb.checked)};
       if(!c.name){ err.textContent='Please enter your name.'; gn.focus(); return; }
       if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c.email)){ err.textContent='Please enter a valid work email.'; ge.focus(); return; }
-      calc(); save(c); btn.disabled=true; btn.textContent='Sending…';
+      calc(); save({name:c.name,email:c.email,company:c.company}); btn.disabled=true; btn.textContent='Sending…';
       var s=state, r={hlabel:'First-year cost of your in-house growth team', headline:fmt(s.tot),
         rows:[['Roles included',s.inc.length?s.inc.join(', '):'None'],['Salaries',fmt(s.sal)],['Benefits and payroll at '+Math.round(s.b*1000)/10+'%',fmt(s.sal*s.b)],['Recruiting fees at '+Math.round(s.f*1000)/10+'%',fmt(s.sal*s.f)],['One '+roles[0][5]+' hire, all in',fmt(s.vp)]],
         insight:'That is before bonuses, equity, software and the months it takes to hire and ramp a new team. Growth Marketing Partners typically comes in about 75% below the in-house team, depending on scope.',
