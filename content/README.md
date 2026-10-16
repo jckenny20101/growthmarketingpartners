@@ -20,3 +20,16 @@ Figures in the guides and on /benchmarks/ were checked against the publishers' o
 ## Research consent
 
 Every tool gate (except the AI shortlist snapshot request) has an optional, unticked box to include anonymised numbers in benchmark research. It is sent as `research` (Yes/No), shown in the lead email, never remembered in the browser, and covered in the privacy policy.
+
+## Founder photo
+
+`Founder - J. Christopher Kenny` (media 449, 800 × 800) appears in five places. To swap it, replace that media
+file in WordPress (or point these image elements at the new one):
+
+| Page | Section | Element |
+|------|---------|---------|
+| About (113) | Our founder: portrait with name and title, top of the right column | "Founder portrait" |
+| Home (14) | Founder experience: same portrait | "Founder portrait" |
+| Home (14) | Twenty program clients a year: round photo beside the signed quote | "Signature with photo" |
+| Contact (115) | Who you'll speak to: same portrait | "Founder portrait" |
+| Private equity (318) | "20 yrs" stat card: small round photo beside "Our founder, J. Christopher Kenny" | "Source with photo" |
