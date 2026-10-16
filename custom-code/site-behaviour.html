@@ -51,6 +51,20 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
 .gc-hide-js{display:none!important}
 .gc-addlink{grid-column:1/-1;justify-self:start;background:none;border:0;padding:0;font:inherit;font-size:15px;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 @media (max-width:600px){.gc-slots-f{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Header logos: show one link per breakpoint */
+@media (min-width:768px){a:has(> [data-id="7d1d19d1"]){display:none!important}}
+@media (max-width:767px){a:has(> [data-id="e3d0fbd"]){display:none!important}}
+/* Home hero video (anchor b7e40c21, filled by heroVideo()) */
+[data-id="b7e40c21"]{display:block;width:100%;min-height:0}
+.gc-hv{margin:0;display:flex;flex-direction:column;gap:12px}
+.gc-hv-frame{position:relative;aspect-ratio:16/9;background:#111214;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line),0 30px 60px -40px rgba(17,18,20,.45)}
+.gc-hv-frame video{display:block;width:100%;height:100%;object-fit:cover}
+.gc-hv-bar{font-style:normal;display:flex;align-items:center;justify-content:space-between;gap:16px;font-family:var(--font-mono),monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.gc-hv-play{display:inline-flex;align-items:center;gap:10px;background:none;border:0;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;cursor:pointer}
+.gc-hv-play::before{content:"";width:0;height:0;border-style:solid;border-width:5px 0 5px 8px;border-color:transparent transparent transparent var(--signal)}
+.gc-hv-play:hover{color:var(--signal)}
+.gc-hv-play[aria-pressed=true]::before{width:8px;height:10px;border:0;background:linear-gradient(90deg,var(--signal) 0 3px,transparent 3px 5px,var(--signal) 5px)}
+.gc-hv-len{opacity:.6}
 </style>
 <script>
 (function(){
@@ -232,7 +246,7 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
   function focusPicker(){
     var fi=document.getElementById('gc-focus'); if(!fi || fi.dataset.gcPills) return; fi.dataset.gcPills='1';
     var msg=document.getElementById('gc-message');
-    var OPTS=['Full pipeline diagnostic','Segments and positioning','Pricing and packaging','Paid','Outbound','Partners','Content','Other'];
+    var OPTS=['Full pipeline diagnostic','Positioning and messaging','Pricing and packaging','Conversion rate optimization','Paid','Outbound','Partners','Content','Other'];
     var g=document.createElement('div'); g.className='gc-slots gc-slots-f'; g.setAttribute('role','group'); g.setAttribute('aria-label','What would you like to fix?');
     OPTS.forEach(function(o){
       var b=document.createElement('button'); b.type='button'; b.className='gc-slot'; b.setAttribute('aria-pressed','false'); b.textContent=o;
@@ -247,7 +261,23 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
     if(msg) msg.classList.add('gc-hide-js');
   }
   function ticker(){ var t=document.querySelector('.elementor-element-2e05c5d3'); if(t && t.children[1]) t.children[1].setAttribute('aria-hidden','true'); }
-  function init(){ ticker(); megaMenu(); calculators(); scheduler(); focusPicker(); }
+  function heroVideo(){
+    var box=document.querySelector('[data-id="b7e40c21"]'); if(!box || box.querySelector('video')) return;
+    var SRC='/wp-content/uploads/2026/10/gmp-hero-720p.mp4', POSTER='/wp-content/uploads/2026/10/gmp-hero-poster.jpg';
+    var still=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    box.innerHTML='<figure class="gc-hv"><div class="gc-hv-frame"><video muted playsinline loop preload="'+(still?'none':'auto')+'" poster="'+POSTER+'"'+(still?'':' autoplay')+' aria-label="Growth Marketing Partners in 90 seconds: every revenue problem has a constraint, and we find it."><source src="'+SRC+'" type="video/mp4"><source src="'+SRC.replace('.mp4','.webm')+'" type="video/webm"></video></div>'
+      +'<figcaption class="gc-hv-bar"><button type="button" class="gc-hv-play" aria-pressed="false">Watch with sound</button><span class="gc-hv-len">1:27</span></figcaption></figure>';
+    var v=box.querySelector('video'), b=box.querySelector('.gc-hv-play');
+    function ambient(){ v.muted=true; v.loop=true; v.controls=false; b.setAttribute('aria-pressed','false'); b.textContent='Watch with sound'; if(!still){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); } }
+    b.addEventListener('click',function(){
+      if(b.getAttribute('aria-pressed')==='true'){ v.pause(); v.currentTime=0; ambient(); return; }
+      v.loop=false; v.muted=false; v.controls=true; v.currentTime=0;
+      var p=v.play(); if(p&&p.catch) p.catch(function(){});
+      b.setAttribute('aria-pressed','true'); b.textContent='Back to silent preview';
+    });
+    v.addEventListener('ended',function(){ if(!v.loop){ v.currentTime=0; ambient(); } });
+  }
+  function init(){ ticker(); megaMenu(); try{ heroVideo(); }catch(e){} calculators(); scheduler(); focusPicker(); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
 </script>
@@ -667,7 +697,69 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
         insight:bad.length?'Pull back on '+list(bad.map(function(r){ return r.n; }))+': the extra spend is buying opportunities above your target, even if the average still looks fine.'+(good.length?' '+list(good.map(function(r){ return r.n; }))+' can take more, in steps of 20 to 30 percent.':''):(good.length?list(good.map(function(r){ return r.n; }))+' can take more budget, in steps of 20 to 30 percent. Hold the rest until cost per opportunity has held for four weeks.':'Nothing needs pulling back. Hold budgets until cost per opportunity has held for four straight weeks.')};
     }
   },
-  { key:'capacity', name:'Sales capacity planner', anchor:'27837bf6', where:'after',
+  { key:'test', name:'Test readiness calculator', anchor:'2019efd0', where:'after',
+      eyebrow:'Test readiness calculator', h2:'Do you have enough traffic to A/B test?',
+      lede:'Enter the page you want to test. We work out how many visitors a reliable test needs at 95% confidence and 80% power, and how long it would take at your traffic.',
+      tag:'Calculator', title:'The page you want to test', button:'Check my page',
+      form:function(id){
+        return '<div class="gt-grid">'+field(id+'-v','Monthly visitors to the page',8000)+field(id+'-c','Current conversion rate (%)',2.5,{max:100})+field(id+'-l','Smallest lift worth detecting (%)',20,{max:500})+field(id+'-k','Versions, including the original',2,{min:2,max:6})+'</div>';
+      },
+      compute:function(card){
+        var V=val(card,'v'), c=val(card,'c')/100, L=val(card,'l')/100, k=Math.round(val(card,'k'));
+        need(V>0,'Enter the monthly visitors to the page.');
+        need(c>0&&c<1,'Enter a conversion rate between 0 and 100%.');
+        need(L>0,'Enter the smallest lift worth detecting.');
+        need(k>=2&&k<=6,'Enter between 2 and 6 versions.');
+        var p2=c*(1+L); need(p2<1,'That lift would push conversion above 100%. Try a smaller lift.');
+        var ZA={2:1.95996,3:2.24140,4:2.39398,5:2.49771,6:2.57583}[k], ZB=0.84162, pb=(c+p2)/2;
+        var n=Math.ceil(Math.pow(ZA*Math.sqrt(2*pb*(1-pb))+ZB*Math.sqrt(c*(1-c)+p2*(1-p2)),2)/Math.pow(p2-c,2));
+        var perWeek=V*12/52, weeks=Math.max(2,Math.ceil(n*k/perWeek));
+        var n4=perWeek*4/k, mde=(ZA+ZB)*Math.sqrt(2*c*(1-c)/n4)/c;
+        var verdict, insight;
+        if(weeks<=4){ verdict='Ready to test'; insight='This page has the traffic for proper A/B tests. Fix the sample size and end date before you start, run at least two full weeks and read the result once, at the end.'; }
+        else if(weeks<=8){ verdict='Testable, but slow'; insight='You can test here, but only a few times a year. Save this page for changes big enough to move the number by '+Math.round(L*100)+'% or more, and skip small copy tweaks.'; }
+        else if(weeks<=16){ verdict='Only for bold changes'; insight='Each test would tie up this page for months. Test only bold changes here, and use research and before-and-after measurement for everything else.'; }
+        else { verdict='Not enough traffic yet'; insight='This page cannot support a reliable A/B test at this lift. Use research to find the problems, fix what is clearly broken and measure the before and after, or test on a higher-traffic page or paid landing page.'; }
+        return {hlabel:'Weeks to a reliable result', headline:weeks>104?'Over two years':weeks+' weeks',
+          rows:[['Verdict',verdict],['Visitors needed per version',num(n)],['Conversions needed per version',num(n*c)],['Visitors to this page each week',num(perWeek)],['Smallest lift you could detect in 4 weeks',Math.round(mde*100)+'%']],
+          insight:insight};
+      }
+    },
+    { key:'sig', name:'A/B test significance checker', anchor:'2019efd0', where:'after',
+      eyebrow:'A/B test significance checker', h2:'Is your test result statistically significant?',
+      lede:'Already running a test? Enter the visitors and conversions for each version. We test the difference at 95% confidence, show the likely range of the lift and check the three things that make results lie: stopping early, too small a sample and an uneven traffic split.',
+      tag:'Checker', title:'Your test results', button:'Check my result',
+      form:function(id){
+        return '<div class="gt-grid">'+field(id+'-na','Visitors to the original (A)',5000)+field(id+'-ca','Conversions on the original (A)',150)+field(id+'-nb','Visitors to the new version (B)',5000)+field(id+'-cb','Conversions on the new version (B)',190)+field(id+'-d','Days the test has run',21)+'</div>';
+      },
+      compute:function(card){
+        function ncdf(x){ var t=1/(1+0.2316419*Math.abs(x)), d=0.3989423*Math.exp(-x*x/2), p=d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.821256+t*1.330274)))); return x>0?1-p:p; }
+        function signed(x){ return (x<0?'-':'+')+Math.abs(x*100).toFixed(1)+'%'; }
+        function rate(x){ return (x*100).toFixed(2)+'%'; }
+        var nA=val(card,'na'), cA=val(card,'ca'), nB=val(card,'nb'), cB=val(card,'cb'), d=val(card,'d');
+        need(nA>0&&nB>0,'Enter the visitors to each version.');
+        need(cA>=0&&cB>=0,'Enter the conversions for each version.');
+        need(cA<=nA&&cB<=nB,'Conversions cannot be higher than visitors.');
+        need(cA>0,'The original needs at least one conversion to compare against.');
+        need(d>=0,'Enter how many days the test has run.');
+        var pA=cA/nA, pB=cB/nB, lift=(pB-pA)/pA, pp=(cA+cB)/(nA+nB);
+        var se0=Math.sqrt(pp*(1-pp)*(1/nA+1/nB)), z=se0>0?(pB-pA)/se0:0, pv=2*(1-ncdf(Math.abs(z)));
+        var se1=Math.sqrt(pA*(1-pA)/nA+pB*(1-pB)/nB), lo=(pB-pA-1.95996*se1)/pA, hi=(pB-pA+1.95996*se1)/pA;
+        var nReq=0;
+        if(pB!==pA){ var pb=(pA+pB)/2; nReq=Math.ceil(Math.pow(1.95996*Math.sqrt(2*pb*(1-pb))+0.84162*Math.sqrt(pA*(1-pA)+pB*(1-pB)),2)/Math.pow(pB-pA,2)); }
+        var N=nA+nB, srm=2*(1-ncdf(Math.abs(nA-N/2)/Math.sqrt(N/4)))<0.001;
+        var nMin=Math.min(nA,nB), sig=pv<0.05, verdict, insight;
+        if(srm){ verdict='Check your traffic split first'; insight='One version got far more visitors than the other. If you meant to split traffic evenly, something in the setup is broken, such as a redirect, bot traffic or tracking, and the result cannot be trusted until it is fixed.'; }
+        else if(sig&&d<14){ verdict='Too early to call'; insight='The numbers look significant, but the test has run for under two weeks. Early results swing a lot, and buyers behave differently across the week. Keep it running for at least 14 full days and to your planned sample size, then read the result once.'; }
+        else if(sig&&lift>0){ verdict='The new version wins'; insight=nMin<nReq?'The lift is significant, but each version has fewer visitors than a test built to find a lift this size would need, so the real gain is probably smaller than it looks. Ship it, then check that qualified pipeline in your CRM moves too, not just form fills.':'The lift is significant at 95% and the sample is large enough to trust it. Ship it, then check that qualified pipeline in your CRM moves too, not just form fills.'; }
+        else if(sig){ verdict='The new version loses'; insight='The new version is significantly worse. Keep the original and write down what you learned: a clear loss is still a useful result.'; }
+        else { verdict='Not significant'; insight=(nReq&&nMin<nReq)?'There is no reliable difference yet. If a '+Math.abs(lift*100).toFixed(0)+'% change is real, each version needs about '+num(nReq)+' visitors to show it. If you planned a sample size, keep going until you reach it. If you already have, treat the versions as equal and test something bolder.':'There is no reliable difference between the versions. Treat them as equal, keep whichever is simpler and test a bolder change next.'; }
+        return {hlabel:'Confidence level (needs 95%)', headline:pv<0.0001?'Over 99.9%':(100*(1-pv)).toFixed(1)+'%',
+          rows:[['Verdict',verdict],['Conversion rate, original',rate(pA)],['Conversion rate, new version',rate(pB)],['Relative lift',signed(lift)+' (likely '+signed(lo)+' to '+signed(hi)+')'],['p-value',pv<0.0001?'Under 0.0001':pv.toFixed(4)],['Visitors per version to trust a lift this size',nReq?num(nReq):'n/a'],['Days run',num(d)+' (minimum 14)']],
+          insight:insight};
+      }
+    },
+    { key:'capacity', name:'Sales capacity planner', anchor:'27837bf6', where:'after',
     eyebrow:'Sales capacity planner', h2:'How many reps does your number need?',
     lede:'Founder-led sales usually ends with a hiring plan. Enter next year’s new revenue target and how your reps perform, and see how many to hire, and what waiting costs.',
     tag:'Calculator', title:'Your target and your team', button:'Plan my hiring',
@@ -687,45 +779,6 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
         rows:[['What your current team should close',money(cur)],['Gap to target',money(gap)],['A new hire’s first-year contribution',money(nowC)],['Reps to hire if you wait 3 months',isFinite(late)?num(late):'Can’t close the gap this year'],['Ramped reps the target needs in total',num(Math.ceil(T/per))]],
         insight:gap<=0?'Your current team should cover the target at today’s attainment. The risk is attainment, not headcount: protect pipeline per rep.'
           :'Hire '+now+' now to close the '+money(gap)+' gap. Wait three months and you’d need '+(isFinite(late)?late:'more than this year allows')+', because ramp eats into the year. This assumes reps ramp evenly and attainment holds; pipeline per rep usually decides whether it does.'};
-    }
-  },
-  { key:'onboarding', name:'Fintech onboarding calculator', anchor:'5fd2f7a8', where:'append',
-    eyebrow:'Onboarding calculator', h2:'What is a better onboarding funnel worth?',
-    lede:'Follow a month of visitors from sign-up to funded account. See your real cost per funded customer, and what a 5-point lift at identity check or first funding would add.',
-    tag:'Calculator', title:'Your onboarding funnel in a typical month', button:'Calculate my funnel',
-    form:function(id){
-      return '<div class="gt-grid">'+field(id+'-s','Marketing spend a month ($K)',150)+field(id+'-v','Visitors or installs a month',60000)+field(id+'-u','Start sign-up (%)',8,{max:100})+field(id+'-k','Pass identity check (%)',70,{max:100})+field(id+'-f','Fund their account (%)',45,{max:100})+field(id+'-r','Annual revenue per funded customer ($)',180)+'</div>';
-    },
-    compute:function(card){
-      var S=val(card,'s')*1000, V=val(card,'v'), u=val(card,'u')/100, k=val(card,'k')/100, f=val(card,'f')/100, r=val(card,'r');
-      need(V>0&&S>=0,'Enter your monthly spend and visitors.');
-      [u,k,f].forEach(function(x){ need(x>0&&x<=1,'Enter each conversion rate between 0 and 100.'); });
-      need(r>0,'Enter annual revenue per funded customer.');
-      var su=V*u, kyc=su*k, fd=kyc*f;
-      var k5=Math.min(1,k+.05), f5=Math.min(1,f+.05);
-      var exK=su*k5*f-fd, exF=kyc*f5-fd;
-      var bigger=exK>=exF?'identity check':'first funding', big=Math.max(exK,exF);
-      return {hlabel:'Cost per funded customer', headline:fd>0?money(S/fd):'n/a',
-        rows:[['Funded customers a month',num(fd)],['Visitor to funded',pct(fd/V*100,2)],['+5 points at identity check',(exK>0?'+'+num(exK)+' funded a month · +'+money(exK*12*r)+' a year':'Already at 100%')],['+5 points at first funding',(exF>0?'+'+num(exF)+' funded a month · +'+money(exF*12*r)+' a year':'Already at 100%')],['Sign-ups lost before funding each month',num(su-fd)]],
-        insight:'A 5-point lift at '+bigger+' is worth more here: about '+num(big)+' more funded customers a month, or '+money(big*12*r)+' in annual revenue, with no extra marketing spend.'};
-    }
-  },
-  { key:'api', name:'Sandbox to live calculator', anchor:'cbf5f22', where:'append',
-    eyebrow:'Sandbox to live', h2:'How much revenue is stuck in the sandbox?',
-    lede:'For API and infrastructure companies, slow integrations delay revenue you have already won. See what going live faster, or converting more sandboxes, is worth.',
-    tag:'Calculator', title:'Your developer funnel', button:'Calculate the value',
-    form:function(id){
-      return '<div class="gt-grid">'+field(id+'-s','New sandbox accounts a month',120)+field(id+'-g','Sandboxes that go live (%)',15,{max:100})+field(id+'-m','Months from sandbox to live',5,{max:36})+field(id+'-r','Monthly revenue per live customer ($)',2500)+field(id+'-x','Months faster to go live',1,{max:36})+'</div>';
-    },
-    compute:function(card){
-      var s=val(card,'s'), g=val(card,'g')/100, m=val(card,'m'), r=val(card,'r'), x=val(card,'x');
-      need(s>0&&r>0,'Enter sandbox accounts and revenue per live customer.');
-      need(g>0&&g<=1,'Enter the share that go live, between 0 and 100.');
-      need(m>=0&&x>=0&&x<=m,'Months faster can’t be more than the months it takes today.');
-      var live=s*g*12, arr=live*r*12, fwd=live*r*x, g5=Math.min(1,g+.05), extra=s*(g5-g)*12*r*12;
-      return {hlabel:'New annual run-rate from a year of sandboxes', headline:money(arr),
-        rows:[['Customers going live a year',num(live)],['Revenue waiting in integration at any time',money(s*g*m*r)+' a month'],['Going live '+x+' month'+(x===1?'':'s')+' faster',(x>0?'+'+money(fwd)+' revenue in the first year':'No change')],['+5 points of sandboxes going live','+'+money(extra)+' annual run-rate'],['Sandbox to live',pct(g*100,1)]],
-        insight:'Each month shaved off integration pulls about '+money(live*r)+' of revenue into the year. Faster go-live usually comes from better docs, a guided first integration and someone owning the account during the sandbox stage.'};
     }
   }];
 
@@ -911,62 +964,14 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
         rows:[['ARR in '+y+' years at '+pct(n*100),money(now)],['ARR in '+y+' years at '+pct(t*100),money(tgt)],['From existing customers alone at '+pct(t*100),money(A*Math.pow(t,y))],['New-customer ARR a year to match, at today’s retention',money(need2)+' (today '+money(w)+')'],['Extra new business that would take',money(need2-w)+' a year']],
         insight:'Retention compounds on the whole base every year, while new business only adds to it. SaaS Capital’s 2026 research finds the companies with the highest net revenue retention grow far faster than the median. Expansion pricing and a customer pipeline target are usually the cheapest growth available.'};
     }
-  },
-  { key:'friction', name:'Onboarding friction audit', anchor:'5fd2f7a8', where:'append',
-    eyebrow:'Onboarding friction audit', h2:'How much friction is in your sign-up flow?',
-    lede:'People give up a financial sign-up after about 19 minutes on average, and the top reasons are that it took too long or asked for too much. Score your flow and see the fixes worth making first.',
-    tag:'Audit', title:'Your sign-up flow today', button:'Score my flow',
-    form:function(id){
-      return '<div class="gt-grid">'+field(id+'-s','Screens from start to funded',12)+field(id+'-f','Form fields the user fills in',25)+field(id+'-m','Typical minutes to finish',14)+field(id+'-d','Documents to upload',1)+'</div>'
-        +'<div class="gt-qs">'+choice(id,0,'How long does the identity check take?',['Instant','Minutes','Hours','Days'])+choice(id,1,'Can people save and come back later?',['Yes','No'])+choice(id,2,'Do you prefill what you already know or can look up?',['Yes','Partly','No'])+choice(id,3,'How do people first fund their account?',['Instant bank link','Card','Manual transfer only'])+'</div>';
-    },
-    compute:function(card){
-      var s=val(card,'s'), f=val(card,'f'), m=val(card,'m'), d=val(card,'d');
-      need(s>0&&f>=0&&m>0&&d>=0,'Please fill in the four numbers.');
-      var idc=picked(card,0,'identity check time'), sv=picked(card,1,'save and resume'), pf=picked(card,2,'prefill'), fu=picked(card,3,'funding method');
-      var parts=[
-        [Math.min(30,m/19*20),'Too long to finish','Cut the time to finish: move anything not needed for approval until after the account is open.'],
-        [Math.min(15,Math.max(0,f-10)*0.6),'Too many form fields','Remove or defer every field you don’t need to approve the account.'],
-        [Math.min(10,Math.max(0,s-6)),'Too many screens','Combine screens; each extra step is another place to quit.'],
-        [Math.min(10,d*4),'Document uploads','Replace uploads with database or open-banking checks where regulation allows.'],
-        [[0,3,8,12][idc],'Slow identity check','Use instant verification with manual review only for exceptions, and keep people moving while it runs.'],
-        [[0,6][sv],'No save and resume','Let people save and come back by email or text, so a missing document doesn’t mean starting over.'],
-        [[0,3,6][pf],'Asking for what you could look up','Prefill from what you already know: device data, address lookup and bank data.'],
-        [[0,2,8][fu],'Slow first funding','Offer an instant bank link for the first deposit, so people are funded before they lose interest.']];
-      var score=Math.min(100,Math.round(parts.reduce(function(t,p){ return t+p[0]; },0)));
-      var top=parts.filter(function(p){ return p[0]>0; }).sort(function(a,b){ return b[0]-a[0]; });
-      var gap=19-m, rows=[['Friction score',score+' / 100 (lower is better)'],['Time against the 19-minute average quit point',gap>=0?num(m)+' minutes, '+num(gap)+' minutes inside it':num(m)+' minutes, '+num(-gap)+' minutes past it']];
-      for(var k=0;k<3;k++) rows.push(top[k]?[top[k][1],top[k][2]]:['','']);
-      return {hlabel:'Onboarding friction score', headline:score+' / 100', rows:rows,
-        insight:'Signicat’s research finds 68% of consumers have abandoned a financial sign-up, and the top reasons are that it took too long, asked for too much personal information, or they changed their mind. Fix the biggest source of friction first, then measure each step’s drop-off before and after.'};
-    }
-  },
-  { key:'integration', name:'Integration time-to-value planner', anchor:'cbf5f22', where:'append',
-    eyebrow:'Integration planner', h2:'Where do the weeks go between signature and first transaction?',
-    lede:'For API and infrastructure companies, revenue starts at the first live transaction, not at signature. Map the stages, find the bottleneck and see what shortening it is worth.',
-    tag:'Planner', title:'Weeks spent at each stage', button:'Find my bottleneck',
-    form:function(id){
-      return rowTable(id,[{name:'Sandbox to first API call',v:[1]},{name:'Security and compliance review',v:[6]},{name:'Contract and legal',v:[4]},{name:'Integration build',v:[8]},{name:'Testing and certification',v:[4]},{name:'Go-live to first live transaction',v:[3]}],['Stage',{label:'Weeks',k:'w'}])
-        +'<div class="gt-grid">'+field(id+'-r','Monthly revenue per live customer ($)',2500)+field(id+'-n','New customers signed a month',4)+'</div>';
-    },
-    compute:function(card){
-      var names=['Sandbox to first API call','Security and compliance review','Contract and legal','Integration build','Testing and certification','Go-live to first live transaction'];
-      var w=names.map(function(n,i){ var v=val(card,'w'+i); return isNaN(v)?0:Math.max(0,v); }), R=val(card,'r'), N=val(card,'n');
-      need(R>0&&N>0,'Enter revenue per live customer and customers signed a month.');
-      var T=w.reduce(function(a,b){ return a+b; },0); need(T>0,'Enter the weeks for at least one stage.');
-      var bi=w.indexOf(Math.max.apply(null,w)), wk=4.345, per=T/wk*R, yr=per*N*12, half=w[bi]/2/wk*R*N*12;
-      return {hlabel:'Weeks from signature to first live transaction', headline:num(T)+' weeks',
-        rows:[['Biggest bottleneck',names[bi]+': '+num(w[bi])+' weeks ('+pct(w[bi]/T*100)+' of the total)'],['Revenue waiting per new customer',money(per)],['Revenue delayed each year, across new customers',money(yr)],['Halving the bottleneck is worth',money(half)+' a year, pulled forward'],['Second-longest stage',(function(){ var c=w.slice(); c[bi]=-1; var j=c.indexOf(Math.max.apply(null,c)); return names[j]+': '+num(w[j])+' weeks'; })()]],
-        insight:'Most of the time between signature and revenue usually sits in one or two stages, often security review or integration build. Pre-approved security packs, a guided first integration and a named owner during the sandbox stage usually shorten them most.'};
-    }
   }];
   MORE.forEach(function(t){ TOOLS.push(t); });
 
   // pages each tool lives on, for the tools hub and links
   var PAGES={quiz:'/services/go-to-market-diagnostic/',efficiency:'/services/go-to-market-diagnostic/',funnel:'/services/pipeline-programs/',cac:'/services/pipeline-programs/',marginal:'/services/pipeline-programs/',forecast:'/services/pipeline-programs/',
     segments:'/services/segments-icp/',shortlist:'/services/segments-icp/',nodecision:'/services/segments-icp/',discount:'/services/pricing-packaging/',price:'/services/pricing-packaging/',pricemodel:'/services/pricing-packaging/',aimargin:'/services/pricing-packaging/',
-    capacity:'/industries/software-saas/',nrr:'/industries/software-saas/',onboarding:'/industries/fintech/',friction:'/industries/fintech/',api:'/industries/fintech/',integration:'/industries/fintech/'};
-  var GROUPS=[['Go-to-market diagnostic',['quiz','efficiency']],['Segments and positioning',['shortlist','segments','nodecision']],['Pricing and packaging',['discount','price','pricemodel','aimargin']],['Pipeline programs',['funnel','cac','marginal','forecast']],['Software and SaaS',['capacity','nrr','inhouse']],['Fintech',['onboarding','friction','api','integration']]];
+    capacity:'/industries/software-saas/',nrr:'/industries/software-saas/',test:'/services/conversion-rate-optimization/',sig:'/services/conversion-rate-optimization/'};
+  var GROUPS=[['Go-to-market diagnostic',['quiz','efficiency']],['Positioning and messaging',['shortlist','segments','nodecision']],['Pricing and packaging',['discount','price','pricemodel','aimargin']],['Pipeline programs',['funnel','cac','marginal','forecast']],['Software and SaaS',['capacity','nrr','inhouse']],['Conversion rate optimization',['test','sig']]];
   function hub(){
     var anchor=document.querySelector('[data-id="7001700a"]');
     if(!anchor||document.getElementById('gt-hub')) return;
@@ -1017,7 +1022,7 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
     h+='<dl class="gt-rows">'+r.rows.filter(function(x){ return x[0]; }).map(function(x){ return '<div><dt>'+esc(x[0])+'</dt><dd>'+esc(x[1])+'</dd></div>'; }).join('')+'</dl>';
     h+='<p class="gt-insight">'+esc(r.insight)+'</p>';
     if(note) h+='<p class="gt-note'+(note.warn?' gt-warn':'')+'">'+esc(note.text)+'</p>';
-    h+='<div class="gt-cta"><a class="gt-btn gt-btn-signal" href="/contact/">Book a diagnostic →</a><button type="button" class="gt-linkbtn gt-resend">Email me these results</button></div>';
+    h+='<div class="gt-cta"><a class="gt-btn gt-btn-signal" href="/contact/">Book a call →</a><button type="button" class="gt-linkbtn gt-resend">Email me these results</button></div>';
     return h;
   }
 
@@ -1133,7 +1138,7 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
       var max=Math.max(tot,vp,1);
       if(barT) barT.style.width=(tot/max*100)+'%';
       if(barV) barV.style.width=(vp/max*100)+'%';
-      if(barG) barG.style.width=(tot*.25/max*100)+'%';
+      if(barG) barG.style.width=(vp*.25/max*100)+'%';
       state={tot:tot,sal:sal,b:b,f:f,vp:vp,n:n,inc:inc};
     }
     root.addEventListener('input',function(e){ if(e.target.closest('.gth-in,.gth-chk')) calc(); });
@@ -1159,7 +1164,7 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
       calc(); save({name:c.name,email:c.email,company:c.company}); btn.disabled=true; btn.textContent='Sending…';
       var s=state, r={hlabel:'First-year cost of your in-house growth team', headline:fmt(s.tot),
         rows:[['Roles included',s.inc.length?s.inc.join(', '):'None'],['Salaries',fmt(s.sal)],['Benefits and payroll at '+Math.round(s.b*1000)/10+'%',fmt(s.sal*s.b)],['Recruiting fees at '+Math.round(s.f*1000)/10+'%',fmt(s.sal*s.f)],['One '+roles[0][5]+' hire, all in',fmt(s.vp)]],
-        insight:'That is before bonuses, equity, software and the months it takes to hire and ramp a new team. Growth Marketing Partners typically comes in about 75% below the in-house team, depending on scope.',
+        insight:'That is before bonuses, equity, software and the months it takes to hire and ramp a new team. Growth Marketing Partners typically comes in about 75% below the cost of hiring one senior leader, depending on scope.',
         inputs:roles.map(function(x){ return x[5]+': '+(x[3].checked?fmt(parseFloat(x[4].value)||0):'not included'); }).join(' · ')+' · Benefits and payroll: '+ben.value+'% · Recruiting fee: '+rec.value+'%'};
       send({name:'In-house team cost calculator'},r,c,g).then(function(ok){
         gate.classList.add('gt-hide'); msg.classList.remove('gt-hide');

@@ -2,7 +2,33 @@
 
 `site-behaviour.html` mirrors Elementor Custom Code snippet **#181**
 ("Site behaviour: mega menu and pipeline calculator", location `elementor_body_end`).
+It also holds the home page hero video player (see below).
 It is the source of truth on the site; this copy is a backup.
+
+## Home page hero video
+
+The hero's right column is an empty div block (`data-id="b7e40c21"`). `heroVideo()` fills it with a muted,
+looping, autoplaying video plus a "Watch with sound" button that restarts it with sound and native controls.
+Visitors who ask for reduced motion get the poster and no autoplay.
+
+| Media | ID | Notes |
+|-------|----|-------|
+| `pipeline-that-turns-into-revenue.mp4` | 441 | Original upload: 1080p, 60 fps, 25.5 MB. Not used on the page. |
+| `gmp-hero-720p.mp4` | 442 | Web copy, 720p, 30 fps, 3.2 MB (H.264 + AAC, fast start). |
+| `gmp-hero-720p.webm` | 444 | Fallback for browsers without H.264 (VP9 + Opus), 3.5 MB. |
+| `gmp-hero-poster.jpg` | 443 | Frame at 1.5 s, shown while loading. |
+
+To swap the video, upload a new original and re-encode:
+
+```
+ffmpeg -i in.mp4 -vf "scale=1280:-2,fps=30" -c:v libx264 -preset slow -crf 25 -pix_fmt yuv420p -c:a aac -b:a 96k -movflags +faststart gmp-hero-720p.mp4
+ffmpeg -i in.mp4 -vf "scale=1280:-2,fps=30" -c:v libvpx-vp9 -b:v 0 -crf 36 -row-mt 1 -c:a libopus -b:a 96k gmp-hero-720p.webm
+```
+
+Then update `SRC`, `POSTER` and the `1:27` length in `heroVideo()`.
+
+The pipeline calculator card (`a29dec7`, class `gc-calc`) now sits in its own section under the ticker
+(`c41c0a7e`). `calculators()` finds it by class, so moving it needed no code change.
 
 ## Booking slots and Google Calendar
 
