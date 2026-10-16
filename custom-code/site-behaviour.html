@@ -54,17 +54,28 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
 /* Header logos: show one link per breakpoint */
 @media (min-width:768px){a:has(> [data-id="7d1d19d1"]){display:none!important}}
 @media (max-width:767px){a:has(> [data-id="e3d0fbd"]){display:none!important}}
-/* Home hero video (anchor b7e40c21, filled by heroVideo()) */
+/* Home hero: full-width video (anchor b7e40c21, filled by heroVideo()), bar d2a7f1c3 with the CTAs */
+[data-id="5dbad2d1"]{flex-direction:column!important;align-items:stretch!important;gap:0!important;padding:24px 0 0!important}
 [data-id="b7e40c21"]{display:block;width:100%;min-height:0}
-.gc-hv{margin:0;display:flex;flex-direction:column;gap:12px}
+.gc-hv{margin:0;width:100%;max-width:none!important}
+.gc-hv-frame,[data-id="d2a7f1c3"]{width:min(100% - 64px,(100vh - 120px)*16/9);width:min(100% - 64px,(100svh - 120px)*16/9);min-width:min(100% - 64px,720px);margin-inline:auto}
 .gc-hv-frame{position:relative;aspect-ratio:16/9;background:#111214;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line),0 30px 60px -40px rgba(17,18,20,.45)}
 .gc-hv-frame video{display:block;width:100%;height:100%;object-fit:cover}
-.gc-hv-bar{font-style:normal;display:flex;align-items:center;justify-content:space-between;gap:16px;font-family:var(--font-mono),monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+[data-id="d2a7f1c3"]{display:flex!important;flex-direction:row!important;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 32px;padding:20px 0 32px!important}
+[data-id="d2a7f1c3"] [data-id="2daf76da"]{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;overflow:hidden!important;clip-path:inset(50%);white-space:nowrap}
+[data-id="e8b5c6d9"]{display:block;min-height:0;width:auto}
+.gc-hv-bar{font-style:normal;display:flex;align-items:center;gap:16px;font-family:var(--font-mono),monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
 .gc-hv-play{display:inline-flex;align-items:center;gap:10px;background:none;border:0;padding:0;font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;cursor:pointer}
 .gc-hv-play::before{content:"";width:0;height:0;border-style:solid;border-width:5px 0 5px 8px;border-color:transparent transparent transparent var(--signal)}
 .gc-hv-play:hover{color:var(--signal)}
 .gc-hv-play[aria-pressed=true]::before{width:8px;height:10px;border:0;background:linear-gradient(90deg,var(--signal) 0 3px,transparent 3px 5px,var(--signal) 5px)}
 .gc-hv-len{opacity:.6}
+@media (max-width:767px){
+  [data-id="5dbad2d1"]{padding-top:0!important}
+  .gc-hv-frame{width:100%;min-width:0;box-shadow:none}
+  [data-id="d2a7f1c3"]{width:auto;min-width:0;margin-inline:16px;padding:16px 0 24px!important}
+  [data-id="e8b5c6d9"]{order:-1;width:100%}
+}
 </style>
 <script>
 (function(){
@@ -265,9 +276,11 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
     var box=document.querySelector('[data-id="b7e40c21"]'); if(!box || box.querySelector('video')) return;
     var SRC='/wp-content/uploads/2026/10/gmp-hero-720p.mp4', POSTER='/wp-content/uploads/2026/10/gmp-hero-poster.jpg';
     var still=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    box.innerHTML='<figure class="gc-hv"><div class="gc-hv-frame"><video muted playsinline loop preload="'+(still?'none':'auto')+'" poster="'+POSTER+'"'+(still?'':' autoplay')+' aria-label="Growth Marketing Partners in 90 seconds: every revenue problem has a constraint, and we find it."><source src="'+SRC+'" type="video/mp4"><source src="'+SRC.replace('.mp4','.webm')+'" type="video/webm"></video></div>'
-      +'<figcaption class="gc-hv-bar"><button type="button" class="gc-hv-play" aria-pressed="false">Watch with sound</button><span class="gc-hv-len">1:27</span></figcaption></figure>';
-    var v=box.querySelector('video'), b=box.querySelector('.gc-hv-play');
+    box.innerHTML='<figure class="gc-hv"><div class="gc-hv-frame"><video muted playsinline loop preload="'+(still?'none':'auto')+'" poster="'+POSTER+'"'+(still?'':' autoplay')+' aria-label="Growth Marketing Partners in 90 seconds: every revenue problem has a constraint, and we find it."><source src="'+SRC+'" type="video/mp4"><source src="'+SRC.replace('.mp4','.webm')+'" type="video/webm"></video></div></figure>';
+    var bar=document.createElement('div'); bar.className='gc-hv-bar';
+    bar.innerHTML='<button type="button" class="gc-hv-play" aria-pressed="false">Watch with sound</button><span class="gc-hv-len">1:27</span>';
+    var slot=document.querySelector('[data-id="e8b5c6d9"]'); if(slot) slot.appendChild(bar); else box.querySelector('figure').appendChild(bar);
+    var v=box.querySelector('video'), b=bar.querySelector('.gc-hv-play');
     function ambient(){ v.muted=true; v.loop=true; v.controls=false; b.setAttribute('aria-pressed','false'); b.textContent='Watch with sound'; if(!still){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); } }
     b.addEventListener('click',function(){
       if(b.getAttribute('aria-pressed')==='true'){ v.pause(); v.currentTime=0; ambient(); return; }

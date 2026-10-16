@@ -7,9 +7,17 @@ It is the source of truth on the site; this copy is a backup.
 
 ## Home page hero video
 
-The hero's right column is an empty div block (`data-id="b7e40c21"`). `heroVideo()` fills it with a muted,
-looping, autoplaying video plus a "Watch with sound" button that restarts it with sound and native controls.
-Visitors who ask for reduced motion get the poster and no autoplay.
+The video is the hero. The hero section (`5dbad2d1`) holds two Elementor blocks:
+
+- `b7e40c21`: an empty div block that `heroVideo()` fills with a muted, looping, autoplaying video.
+- `d2a7f1c3` (hero bar): the H1 "Pipeline that turns into revenue." (visually hidden, kept for search and screen
+  readers), the Book a call / See how it works buttons, and `e8b5c6d9`, where `heroVideo()` puts the
+  "Watch with sound" button. It restarts the video with sound and native controls.
+
+The video is as wide as the screen allows while the whole frame stays visible:
+`min(100% - 64px, (100svh - 120px) * 16/9)`. That keeps the burned-in captions on screen; a true edge-to-edge
+crop would cut them off. On phones it runs edge to edge. Visitors who ask for reduced motion get the poster and no
+autoplay. The old hero eyebrow, intro paragraph and Positioning/Conversion/Testing/Scaling chips were removed.
 
 | Media | ID | Notes |
 |-------|----|-------|
