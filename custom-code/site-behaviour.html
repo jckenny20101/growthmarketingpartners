@@ -267,9 +267,11 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
   function ticker(){ var t=document.querySelector('.elementor-element-2e05c5d3'); if(t && t.children[1]) t.children[1].setAttribute('aria-hidden','true'); }
   function heroVideo(){
     var box=document.querySelector('[data-id="b7e40c21"]'); if(!box || box.querySelector('video')) return;
-    var SRC='/wp-content/uploads/2026/10/gmp-hero-720p.mp4', POSTER='/wp-content/uploads/2026/10/gmp-hero-poster.jpg';
+    // Full HD (1080p, 60 fps) for laptops and desktops; a 720p copy for phones. The WebM is a fallback for browsers without H.264.
+    var U='/wp-content/uploads/2026/10/', hd=(window.innerWidth||0)*(window.devicePixelRatio||1)>=1400;
+    var SRC=U+(hd?'gmp-hero-1080p.mp4':'gmp-hero-720p-hq.mp4'), WEBM=U+'gmp-hero-720p.webm', POSTER=U+(hd?'gmp-hero-poster-1080p.jpg':'gmp-hero-poster.jpg');
     var still=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    box.innerHTML='<figure class="gc-hv"><div class="gc-hv-frame"><video muted playsinline loop preload="'+(still?'none':'auto')+'" poster="'+POSTER+'"'+(still?' controls':' autoplay')+' aria-label="Growth Marketing Partners in 90 seconds: every revenue problem has a constraint, and we find it."><source src="'+SRC+'" type="video/mp4"><source src="'+SRC.replace('.mp4','.webm')+'" type="video/webm"></video></div></figure>';
+    box.innerHTML='<figure class="gc-hv"><div class="gc-hv-frame"><video muted playsinline loop preload="'+(still?'none':'auto')+'" poster="'+POSTER+'"'+(still?' controls':' autoplay')+' aria-label="Growth Marketing Partners in 90 seconds: every revenue problem has a constraint, and we find it."><source src="'+SRC+'" type="video/mp4"><source src="'+WEBM+'" type="video/webm"></video></div></figure>';
   }
   function init(){ ticker(); megaMenu(); try{ heroVideo(); }catch(e){} calculators(); scheduler(); focusPicker(); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();

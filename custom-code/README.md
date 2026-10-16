@@ -19,21 +19,27 @@ instead of trimming more. If a new video puts text closer to the top or bottom e
 
 The old hero eyebrow, intro paragraph and Positioning/Conversion/Testing/Scaling chips were removed.
 
+`heroVideo()` picks the file by screen size: full HD when `innerWidth × devicePixelRatio ≥ 1400` (laptops, desktops,
+tablets), otherwise the 720p copy (phones). All copies are silent; the video always plays muted.
+
 | Media | ID | Notes |
 |-------|----|-------|
 | `pipeline-that-turns-into-revenue.mp4` | 441 | Original upload: 1080p, 60 fps, 25.5 MB. Not used on the page. |
-| `gmp-hero-720p.mp4` | 442 | Web copy, 720p, 30 fps, 3.2 MB (H.264 + AAC, fast start). |
-| `gmp-hero-720p.webm` | 444 | Fallback for browsers without H.264 (VP9 + Opus), 3.5 MB. |
-| `gmp-hero-poster.jpg` | 443 | Frame at 1.5 s, shown while loading. |
+| `gmp-hero-1080p.mp4` | 446 | Laptops and desktops: 1080p, 60 fps, H.264 CRF 18, no audio, 7.7 MB. Matches the original (SSIM 0.9995). |
+| `gmp-hero-720p-hq.mp4` | 447 | Phones: 720p, 30 fps, H.264 CRF 20, no audio, 3.4 MB. |
+| `gmp-hero-720p.webm` | 444 | Fallback for browsers without H.264 (VP9), 3.5 MB. |
+| `gmp-hero-poster-1080p.jpg` / `gmp-hero-poster.jpg` | 448 / 443 | Frame at 1.5 s, shown while loading. |
+| `gmp-hero-720p.mp4` | 442 | Earlier low-bitrate copy, no longer used. |
 
 To swap the video, upload a new original and re-encode:
 
 ```
-ffmpeg -i in.mp4 -vf "scale=1280:-2,fps=30" -c:v libx264 -preset slow -crf 25 -pix_fmt yuv420p -c:a aac -b:a 96k -movflags +faststart gmp-hero-720p.mp4
-ffmpeg -i in.mp4 -vf "scale=1280:-2,fps=30" -c:v libvpx-vp9 -b:v 0 -crf 36 -row-mt 1 -c:a libopus -b:a 96k gmp-hero-720p.webm
+ffmpeg -i in.mp4 -an -c:v libx264 -preset slow -crf 18 -tune animation -pix_fmt yuv420p -movflags +faststart gmp-hero-1080p.mp4
+ffmpeg -i in.mp4 -vf "scale=1280:-2:flags=lanczos,fps=30" -an -c:v libx264 -preset slow -crf 20 -tune animation -pix_fmt yuv420p -movflags +faststart gmp-hero-720p-hq.mp4
+ffmpeg -i in.mp4 -vf "scale=1280:-2,fps=30" -an -c:v libvpx-vp9 -b:v 0 -crf 36 -row-mt 1 gmp-hero-720p.webm
 ```
 
-Then update `SRC` and `POSTER` in `heroVideo()`.
+Then update the file names in `heroVideo()`.
 
 The pipeline calculator card (`a29dec7`, class `gc-calc`) now sits in its own section under the ticker
 (`c41c0a7e`). `calculators()` finds it by class, so moving it needed no code change.
