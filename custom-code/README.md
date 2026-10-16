@@ -7,17 +7,14 @@ It is the source of truth on the site; this copy is a backup.
 
 ## Home page hero video
 
-The video is the hero. The hero section (`5dbad2d1`) holds two Elementor blocks:
+The video is the hero, edge to edge at 16:9 (no cropping). The hero section (`5dbad2d1`) holds two Elementor blocks:
 
-- `b7e40c21`: an empty div block that `heroVideo()` fills with a muted, looping, autoplaying video.
+- `b7e40c21`: an empty div block that `heroVideo()` fills with a muted, looping, autoplaying video. The video is
+  silent, so there is no sound button. Visitors who ask for reduced motion get the poster with play controls.
 - `d2a7f1c3` (hero bar): the H1 "Pipeline that turns into revenue." (visually hidden, kept for search and screen
-  readers), the Book a call / See how it works buttons, and `e8b5c6d9`, where `heroVideo()` puts the
-  "Watch with sound" button. It restarts the video with sound and native controls.
+  readers) and the Book a call / See how it works buttons.
 
-The video is as wide as the screen allows while the whole frame stays visible:
-`min(100% - 64px, (100svh - 120px) * 16/9)`. That keeps the burned-in captions on screen; a true edge-to-edge
-crop would cut them off. On phones it runs edge to edge. Visitors who ask for reduced motion get the poster and no
-autoplay. The old hero eyebrow, intro paragraph and Positioning/Conversion/Testing/Scaling chips were removed.
+The old hero eyebrow, intro paragraph and Positioning/Conversion/Testing/Scaling chips were removed.
 
 | Media | ID | Notes |
 |-------|----|-------|
@@ -33,7 +30,7 @@ ffmpeg -i in.mp4 -vf "scale=1280:-2,fps=30" -c:v libx264 -preset slow -crf 25 -p
 ffmpeg -i in.mp4 -vf "scale=1280:-2,fps=30" -c:v libvpx-vp9 -b:v 0 -crf 36 -row-mt 1 -c:a libopus -b:a 96k gmp-hero-720p.webm
 ```
 
-Then update `SRC`, `POSTER` and the `1:27` length in `heroVideo()`.
+Then update `SRC` and `POSTER` in `heroVideo()`.
 
 The pipeline calculator card (`a29dec7`, class `gc-calc`) now sits in its own section under the ticker
 (`c41c0a7e`). `calculators()` finds it by class, so moving it needed no code change.
