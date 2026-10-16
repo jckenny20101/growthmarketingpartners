@@ -69,6 +69,19 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
 @media (max-width:767px){
   [data-id="d2a7f1c3"]{width:auto;margin-inline:16px;padding:20px 0 28px!important}
 }
+/* Contact page: form beside the intro on desktop, right after it on smaller screens; trust checklist */
+@media (min-width:1025px){
+  [data-id="6c2d2b4"]{grid-template-rows:auto 1fr;row-gap:48px}
+  [data-id="6c2d2b4"] > [data-id="4b6fd0dc"]{grid-column:1;grid-row:1}
+  [data-id="6c2d2b4"] > [data-id="3f3c5213"]{grid-column:2;grid-row:1 / span 2;align-self:start}
+  [data-id="6c2d2b4"] > [data-id="9b625390"]{grid-column:1;grid-row:2;align-self:start}
+}
+[data-id="3f3c5213"]{scroll-margin-top:96px}
+[data-id="1c7d58a0"]{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:14px!important;margin-top:8px;padding:24px 0;border-block:1px solid var(--line)}
+[data-id="1c7d58a0"] > p{position:relative;margin:0;padding-left:34px}
+[data-id="1c7d58a0"] > p::before{content:"";position:absolute;left:0;top:.2em;width:20px;height:20px;background:var(--signal)}
+[data-id="1c7d58a0"] > p::after{content:"";position:absolute;left:7px;top:calc(.2em + 3px);width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+[data-id="1c7d58a0"] strong{color:var(--ink);font-weight:600}
 </style>
 <script>
 (function(){
@@ -273,7 +286,8 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
     var still=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     box.innerHTML='<figure class="gc-hv"><div class="gc-hv-frame"><video muted playsinline loop preload="'+(still?'none':'auto')+'" poster="'+POSTER+'"'+(still?' controls':' autoplay')+' aria-label="Growth Marketing Partners in 90 seconds: every revenue problem has a constraint, and we find it."><source src="'+SRC+'" type="video/mp4"><source src="'+WEBM+'" type="video/webm"></video></div></figure>';
   }
-  function init(){ ticker(); megaMenu(); try{ heroVideo(); }catch(e){} calculators(); scheduler(); focusPicker(); }
+  function contactAnchor(){ var c=document.querySelector('[data-id="3f3c5213"]'); if(c && !c.id) c.id='request-a-call'; }
+  function init(){ ticker(); megaMenu(); try{ heroVideo(); }catch(e){} contactAnchor(); calculators(); scheduler(); focusPicker(); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
 </script>

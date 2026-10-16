@@ -44,6 +44,17 @@ Then update the file names in `heroVideo()`.
 The pipeline calculator card (`a29dec7`, class `gc-calc`) now sits in its own section under the ticker
 (`c41c0a7e`). `calculators()` finds it by class, so moving it needed no code change.
 
+## Contact page (book a call) layout
+
+The hero grid (`6c2d2b4`) has three children: the intro (`4b6fd0dc`, with the trust checklist `1c7d58a0`), the form
+card (`3f3c5213`) and "What happens next" (`9b625390`). On desktop the snippet places the form card in the right
+column beside both; on tablet and phone the natural order puts the form straight after the intro. `contactAnchor()`
+gives the form card `id="request-a-call"` so any "Book my free call" button can link to `#request-a-call`.
+
+Every proof point on the page is copied from claims already published on the About and home pages
+(20 years, $100s of millions in pipeline, PE and VC, the companies and investors, 100+ years, twenty clients a year).
+Add client results only with real numbers and the client's permission.
+
 ## Booking slots and Google Calendar
 
 `scheduler()` turns the Contact form's day and time fields into slot buttons
