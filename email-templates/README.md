@@ -70,3 +70,18 @@ spam-filter signals, and Outlook/Hotmail was already sending these emails to Jun
 All emails set From to ckenny@growthmarketingpartners.ca. FluentSMTP sends them through a **Gmail / Google Workspace API**
 connection (OAuth client "FluentSMTP" in Google Cloud project `gmp-website-261010`). Don't use an SMTP connection
 (smtp.gmail.com): the Railway host blocks outgoing SMTP ports, so sends hang until they time out.
+
+## If the emails arrive as a block of text
+
+That means the form's stored message has lost its HTML. In October the booking form (page 115) was found holding
+only the bare text of both templates; nothing in the page's revisions showed when it changed. The Elementor MCP
+`manage-elements` tool is known to do this, and editing the form's email action in the Elementor editor may too.
+
+Check all six emails against the templates in this folder, and put them back if they differ:
+
+```
+WP_USER=ckenny WP_APP_PASSWORD='…' python3 build/check_email_templates.py            # check only
+WP_USER=ckenny WP_APP_PASSWORD='…' python3 build/check_email_templates.py --restore  # restore
+```
+
+Change the wording in these template files, then restore. Don't edit the message in the Elementor editor.
