@@ -60,11 +60,11 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
 [data-id="5dbad2d1"]{flex-direction:column!important;align-items:stretch!important;gap:0!important;padding:0!important}
 [data-id="b7e40c21"]{display:block;width:100%;min-height:0}
 .gc-hv{margin:0;width:100%;max-width:none!important}
-/* Fit the whole frame under the 73px header (72px bar + 2px orange rule, minus the 1px it replaced): trim up to 12% of the height (the video's top 10% and bottom 3% are
+/* Fit the whole frame under the 72px header: trim up to 12% of the height (the video's top 10% and bottom 3% are
    empty), then add side margins on very wide, short screens instead of trimming more. */
 .gc-hv-frame{position:relative;margin-inline:auto;background:#111214;overflow:hidden;
-  width:min(100%,(100vh - 73px)/.495);width:min(100%,(100svh - 73px)/.495);
-  height:min(100vh - 73px,56.25vw);height:min(100svh - 73px,56.25vw)}
+  width:min(100%,(100vh - 72px)/.495);width:min(100%,(100svh - 72px)/.495);
+  height:min(100vh - 72px,56.25vw);height:min(100svh - 72px,56.25vw)}
 .gc-hv-frame video{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 79%}
 [data-id="d2a7f1c3"]{display:flex!important;flex-direction:row!important;flex-wrap:wrap;align-items:center;gap:16px 32px;width:min(100% - 128px,var(--layout-max,1280px));margin-inline:auto;padding:28px 0 36px!important}
 [data-id="d2a7f1c3"] [data-id="2daf76da"]{position:absolute!important;width:1px!important;height:1px!important;margin:-1px!important;overflow:hidden!important;clip-path:inset(50%);white-space:nowrap}

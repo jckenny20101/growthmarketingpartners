@@ -7,7 +7,7 @@ It is the source of truth on the site; this copy is a backup.
 
 ## Home page hero video
 
-The video is the hero, full width and sized so the whole frame fits under the 73px header (including its orange bottom rule) without scrolling.
+The video is the hero, full width and sized so the whole frame fits under the 72px header (its orange bottom rule is drawn inside that height) without scrolling.
 It trims up to 12% of the frame's height (`object-position: 50% 79%`, so about 9.5% off the top and 2.5% off the
 bottom; the video's top 10.8% and bottom 3.1% are always empty). On very wide, short screens it adds side margins
 instead of trimming more. If a new video puts text closer to the top or bottom edge, re-check this. The hero section (`5dbad2d1`) holds two Elementor blocks:
