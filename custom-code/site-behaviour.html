@@ -84,6 +84,30 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
 [data-id="1c7d58a0"] > p::before{content:"";position:absolute;left:0;top:.2em;width:20px;height:20px;background:var(--signal)}
 [data-id="1c7d58a0"] > p::after{content:"";position:absolute;left:7px;top:calc(.2em + 3px);width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
 [data-id="1c7d58a0"] strong{color:var(--ink);font-weight:600}
+/* Insights articles: table of contents in a left column (built by articleToc()) */
+.gc-art{display:grid;grid-template-columns:240px minmax(0,680px);column-gap:80px;align-items:start;width:100%}
+.gc-art-body{grid-column:2;min-width:0;display:flex;flex-direction:column}
+.gc-art-body h2[id]{scroll-margin-top:104px}
+.gc-toc{grid-column:1;grid-row:1;position:sticky;top:112px;align-self:start;display:flex;flex-direction:column;gap:24px}
+.gc-toc details{margin:0}
+.gc-toc summary{list-style:none;font-family:var(--font-mono),monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);opacity:.7;margin-bottom:14px;pointer-events:none}
+.gc-toc summary::-webkit-details-marker{display:none}
+.gc-toc ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--line);counter-reset:toc}
+.gc-toc li{margin:0;counter-increment:toc}
+.gc-toc li a{display:block;padding:7px 0 7px 16px;margin-left:-1px;border-left:2px solid transparent;font-family:var(--font-sans),sans-serif;font-size:14px;line-height:1.4;color:var(--ink);opacity:.65;text-decoration:none;transition:opacity .15s,border-color .15s,color .15s}
+.gc-toc li a:hover{opacity:1}
+.gc-toc li a[aria-current=true]{opacity:1;border-left-color:var(--signal);font-weight:600}
+.gc-toc-cta{font-family:var(--font-sans),sans-serif;font-size:14px;color:var(--ink);text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--signal)}
+@media (max-width:1024px){
+  .gc-art{grid-template-columns:minmax(0,1fr);row-gap:32px}
+  .gc-art-body{grid-column:1;grid-row:2}
+  .gc-toc{grid-column:1;grid-row:1;position:static;padding:16px 20px;border:1px solid var(--line);background:var(--surface-raised,#fbfaf6)}
+  .gc-toc summary{pointer-events:auto;cursor:pointer;margin:0;display:flex;justify-content:space-between;align-items:center}
+  .gc-toc summary::after{content:"+";font-size:18px;line-height:1}
+  .gc-toc details[open] summary{margin-bottom:12px}
+  .gc-toc details[open] summary::after{content:"\2212"}
+  .gc-toc-cta{display:none}
+}
 </style>
 <script>
 (function(){
@@ -289,7 +313,38 @@ html.gc-mega-open .gc-mega-scrim{opacity:1;pointer-events:auto}
     box.innerHTML='<figure class="gc-hv"><div class="gc-hv-frame"><video muted playsinline loop preload="'+(still?'none':'auto')+'" poster="'+POSTER+'"'+(still?' controls':' autoplay')+' aria-label="Growth Marketing Partners in 90 seconds: every revenue problem has a constraint, and we find it."><source src="'+SRC+'" type="video/mp4"><source src="'+WEBM+'" type="video/webm"></video></div></figure>';
   }
   function contactAnchor(){ var c=document.querySelector('[data-id="3f3c5213"]'); if(c && !c.id) c.id='request-a-call'; }
-  function init(){ ticker(); megaMenu(); try{ heroVideo(); }catch(e){} contactAnchor(); calculators(); scheduler(); focusPicker(); }
+  function articleToc(){
+    if(!document.body.classList.contains('single-post')) return;
+    var root=document.querySelector('[data-elementor-type="wp-post"]'); if(!root || root.querySelector('.gc-toc')) return;
+    // The article body is the section with the most H2s; its container is the smallest element holding all of them.
+    var best=null, n=0; [].forEach.call(root.children,function(s){ var c=s.querySelectorAll('h2').length; if(c>n){ n=c; best=s; } });
+    if(!best || n<2) return;
+    var hs=[].slice.call(best.querySelectorAll('h2')), box=hs[0].parentElement;
+    while(box && box!==best && !hs.every(function(h){ return box.contains(h); })) box=box.parentElement;
+    if(!box) return;
+    var used={}, items=hs.map(function(h){
+      var base=(h.textContent||'').toLowerCase().replace(/[’']/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)||'section', id=base, i=2;
+      while(used[id] || (document.getElementById(id) && document.getElementById(id)!==h)) id=base+'-'+(i++);
+      used[id]=1; if(!h.id) h.id=id;
+      return '<li><a href="#'+h.id+'">'+h.textContent.replace(/[<>&]/g,'')+'</a></li>';
+    });
+    var body=document.createElement('div'); body.className='gc-art-body';
+    body.style.gap=getComputedStyle(box).rowGap;
+    while(box.firstChild) body.appendChild(box.firstChild);
+    var wide=!window.matchMedia || !matchMedia('(max-width:1024px)').matches;
+    var toc=document.createElement('aside'); toc.className='gc-toc'; toc.setAttribute('aria-label','Table of contents');
+    toc.innerHTML='<details'+(wide?' open':'')+'><summary>On this page</summary><nav><ol>'+items.join('')+'</ol></nav></details><a class="gc-toc-cta" href="/contact/">Talk to us about this \u2192</a>';
+    var art=document.createElement('div'); art.className='gc-art'; art.appendChild(toc); art.appendChild(body); box.appendChild(art);
+    var links=[].slice.call(toc.querySelectorAll('a[href^="#"]'));
+    links.forEach(function(a){ a.addEventListener('click',function(){ if(!wide) toc.querySelector('details').open=false; }); });
+    function spy(){
+      var cur=hs[0];
+      hs.forEach(function(h){ if(h.getBoundingClientRect().top<140) cur=h; });
+      links.forEach(function(a){ a.setAttribute('aria-current', a.getAttribute('href')==='#'+cur.id ? 'true' : 'false'); });
+    }
+    var t=0; window.addEventListener('scroll',function(){ if(!t) t=requestAnimationFrame(function(){ t=0; spy(); }); },{passive:true}); spy();
+  }
+  function init(){ ticker(); megaMenu(); try{ heroVideo(); }catch(e){} try{ articleToc(); }catch(e){} contactAnchor(); calculators(); scheduler(); focusPicker(); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
 </script>

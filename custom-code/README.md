@@ -55,6 +55,14 @@ Every proof point on the page is copied from claims already published on the Abo
 (20 years, $100s of millions in pipeline, PE and VC, the companies and investors, 100+ years, twenty clients a year).
 Add client results only with real numbers and the client's permission.
 
+## Insights articles: table of contents
+
+`articleToc()` runs on single posts (`body.single-post`). It finds the article body (the section with the most H2s),
+gives each H2 an id, and lays the body out as a grid: an "On this page" list in a 240px left column, sticky while
+scrolling and highlighting the current section, then the 680px article column. Below 1025px the list becomes a
+collapsible box above the article. It needs no per-post setup: any new guide with two or more H2s gets one.
+The /insights/ index and pages are untouched.
+
 ## Booking slots and Google Calendar
 
 `scheduler()` turns the Contact form's day and time fields into slot buttons
