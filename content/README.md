@@ -33,3 +33,10 @@ file in WordPress (or point these image elements at the new one):
 | Home (14) | Twenty program clients a year: round photo beside the signed quote | "Signature with photo" |
 | Contact (115) | Who you'll speak to: same portrait | "Founder portrait" |
 | Private equity (318) | "20 yrs" stat card: small round photo beside "Our founder, J. Christopher Kenny" | "Source with photo" |
+
+## Founder background: investors, not companies
+
+For discretion, the site names the investors behind the companies the founder worked inside, never the companies
+themselves. The "Experience inside companies backed by" line (About, Home "Founder experience", Contact "Who you'll
+speak to") reads: Summit Partners · Wavecrest Growth Partners · MassMutual Ventures · Techstars.
+Keep employer and client company names off the site unless the founder says otherwise.
